@@ -19,7 +19,7 @@ export default class Release extends Command {
             const newVersion: string = await commitAndTagVersion({ dryRun: true, silent: true });
             console.log({ newVersion });
         } catch (error) {
-            console.error(error);
+            this.error(error);
         }
     }
 }
