@@ -11,7 +11,7 @@
     "@oclif/core": "^4",
     "@oclif/plugin-help": "^6",
     "@oclif/plugin-plugins": "^5",
-    "commit-and-tag-version": "^12.5.0"
+    "commit-and-tag-version": "12.5.0"
   },
   "devDependencies": {
     "@oclif/prettier-config": "^0.2.1",
@@ -70,5 +70,10 @@
     "test": "mocha --forbid-only \"test/**/*.test.ts\"",
     "version": "oclif readme && git add README.md"
   },
-  "types": "dist/index.d.ts"
+  "types": "dist/index.d.ts",
+  "pnpm": {
+    "patchedDependencies": {
+      "commit-and-tag-version@12.5.0": "patches/commit-and-tag-version@12.5.0.patch"
+    }
+  }
 }
