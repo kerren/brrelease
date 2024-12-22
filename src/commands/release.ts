@@ -41,6 +41,7 @@ export default class Release extends Command {
             await gitCreateBranch(releaseBranchName);
             newReleaseBranchSpinner.succeed(`Creating a new release branch ${newVersionWithPrefix}`);
         } catch (error) {
+            this.log('\n');
             this.error((error as any).stderr ?? (error as any).message ?? error);
         }
     }
