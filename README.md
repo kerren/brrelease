@@ -34,7 +34,7 @@ $ npm install -g brrelease
 $ brrelease COMMAND
 running command...
 $ brrelease (--version)
-brrelease/1.7.0 linux-x64 node-v23.5.0
+brrelease/1.7.1 linux-x64 node-v23.5.0
 $ brrelease --help [COMMAND]
 USAGE
   $ brrelease COMMAND
@@ -89,7 +89,9 @@ FLAGS
                                                           branches (default is "release/")
   -b, --merge-into-branch=<value>                         If you would like the release to merge into a different
                                                           branch, specify it here. The default is the current branch
-                                                          you're on
+                                                          you're on. Please note that this branch will be merged into
+                                                          the branch you're on after the release runs to ensure the
+                                                          changelog generates correctly.
   -c, --changelog-file-path=<value>                       [default: CHANGELOG.md] The path to the file that the
                                                           changelog should be written to
   -m, --run-script-during-release-commit-message=<value>  [default: chore: generate the release file changes] The commit
@@ -136,5 +138,5 @@ EXAMPLES
   $ brrelease release --package-file=package.json --bump-file=package-lock.json --bump-file=.versionrc
 ```
 
-_See code: [src/commands/release.ts](https://github.com/kerren/brrelease/blob/v1.7.0/src/commands/release.ts)_
+_See code: [src/commands/release.ts](https://github.com/kerren/brrelease/blob/v1.7.1/src/commands/release.ts)_
 <!-- commandsstop -->

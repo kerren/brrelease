@@ -72,7 +72,7 @@ export default class Release extends Command {
         }),
         'merge-into-branch': Flags.string({
             char: 'b',
-            description: `If you would like the release to merge into a different branch, specify it here. The default is the current branch you're on`,
+            description: `If you would like the release to merge into a different branch, specify it here. The default is the current branch you're on. Please note that this branch will be merged into the branch you're on after the release runs to ensure the changelog generates correctly.`,
         }),
         'bump-files-commit-message': Flags.string({
             description: 'The commit message to use when bumping the version in files',
