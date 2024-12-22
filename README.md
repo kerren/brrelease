@@ -89,7 +89,9 @@ FLAGS
                                                           branches (default is "release/")
   -b, --merge-into-branch=<value>                         If you would like the release to merge into a different
                                                           branch, specify it here. The default is the current branch
-                                                          you're on
+                                                          you're on. Please note that this branch will be merged into
+                                                          the branch you're on after the release runs to ensure the
+                                                          changelog generates correctly.
   -c, --changelog-file-path=<value>                       [default: CHANGELOG.md] The path to the file that the
                                                           changelog should be written to
   -m, --run-script-during-release-commit-message=<value>  [default: chore: generate the release file changes] The commit
