@@ -74,9 +74,11 @@ Run a release on the branch that you're on
 USAGE
   $ brrelease release [-P <value>] [-G <value>] [-R <value>] [-c <value>] [-C] [--changelog-commit-message
     <value>] [-r <value>...] [-m <value>] [-b <value>] [--bump-files-commit-message <value>] [-p <value>...] [-B
-    <value>...] [-u <value>...] [--release-as major|minor|patch] [--first-release] [--prerelease <value>] [-s]
+    <value>...] [-u <value>...] [--release-as major|minor|patch] [--first-release] [--prerelease <value>] [-s] [-A]
 
 FLAGS
+  -A, --auto-push                                         Automatically push the branches and tag once the release has
+                                                          been merged (this is more for convenience)
   -B, --bump-file=<value>...                              The files where the version should be bumped with out the
                                                           previous version being considered (see
                                                           https://github.com/absolute-version/commit-and-tag-version)
