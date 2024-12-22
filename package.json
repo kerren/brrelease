@@ -1,7 +1,7 @@
 {
   "name": "brrelease",
   "description": "A CLI used to create releases on a repository but it runs on any branch and allows you to trigger file generateors, etc as part of the release.",
-  "version": "1.2.0",
+  "version": "1.3.0",
   "author": "Kerren Ortlepp",
   "bin": {
     "brrelease": "./bin/run.js"
@@ -74,7 +74,7 @@
     "test:run:1": "echo $(date) > test_1.out",
     "test:run:2": "echo \"the date is $(date)\" > test_2.out",
     "test:run:no_file": "echo \"Hello world - no file changes here...\"",
-    "release:script": "pnpm build && pnpm prepack"
+    "release:script": "pnpm build && pnpm prepack && git commit -am 'chore: update the README' || true"
   },
   "types": "dist/index.d.ts",
   "pnpm": {
