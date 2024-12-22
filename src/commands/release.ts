@@ -118,7 +118,25 @@ export default class Release extends Command {
             const gitBinaryPath = flags['git-binary-path'];
             const sign = flags['sign'];
 
-            const newVersion: string = await commitAndTagVersion({ dryRun: true, silent: true });
+            const packageFiles = (flags['package-file'] ?? []).filter((f) => f !== '');
+            const bumpFiles = (flags['bump-file'] ?? []).filter((f) => f !== '');
+            const updaters = (flags['updater'] ?? []).filter((f) => f !== '');
+
+            const changelogFilePath = flags['changelog-file-path'];
+
+            const commitAndTagBody = {
+                silent: true,
+                infile: changelogFilePath,
+                bumpFiles: [...bumpFiles, ...packageFiles],
+                packageFiles,
+                updaters,
+                sign,
+                releaseAs: flags['release-as'] ?? undefined,
+                firstRelease: flags['first-release'] ?? undefined,
+                prerelease: flags['prerelease'] ?? undefined,
+            };
+
+            const newVersion: string = await commitAndTagVersion({ ...commitAndTagBody, dryRun: true });
             const newVersionWithPrefix = `${tagPrefix}${newVersion}`;
             this.log(`The new release version will be ${chalk.green(newVersionWithPrefix)}`);
 
@@ -157,44 +175,34 @@ export default class Release extends Command {
 
             // 3. Create the changelog
             const skipChangelog = flags['skip-changelog'];
-            const changelogFilePath = flags['changelog-file-path'];
             const changeLogSpinner = ora(`Creating the changelog ${changelogFilePath}`);
             if (skipChangelog) {
                 changeLogSpinner.warn('You have elected to skip changelog creation');
             } else {
                 await commitAndTagVersion({
-                    silent: true,
+                    ...commitAndTagBody,
                     skip: {
                         tag: true,
                         bump: true,
                         commit: true,
                     },
-                    infile: changelogFilePath,
-                    sign,
                 });
                 changeLogSpinner.succeed(`Creating the changelog ${changelogFilePath}`);
                 await gitStageChanges(gitBinaryPath);
                 await gitCommitChanges(gitBinaryPath, flags['changelog-commit-message'], sign);
             }
 
-            // 4. Run the bump files?
-            const packageFiles = (flags['package-file'] ?? []).filter((f) => f !== '');
-            const bumpFiles = (flags['bump-file'] ?? []).filter((f) => f !== '');
-            const updaters = (flags['updater'] ?? []).filter((f) => f !== '');
+            // 4. Run the bump files
             const numFiles = packageFiles.length + bumpFiles.length + updaters.length;
             const bumpSpinner = ora(`Bumping version number to ${newVersionWithPrefix}`);
             if (numFiles > 0) {
                 await commitAndTagVersion({
-                    silent: true,
+                    ...commitAndTagBody,
                     skip: {
                         tag: true,
                         changelog: true,
                         commit: true,
                     },
-                    bumpFiles: [...bumpFiles, ...packageFiles],
-                    packageFiles: packageFiles,
-                    updaters: flags['updater'] ?? [],
-                    sign,
                 });
                 await gitStageChanges(gitBinaryPath);
                 await gitCommitChanges(gitBinaryPath, flags['bump-files-commit-message'], sign);
