@@ -73,7 +73,8 @@
     "version": "oclif readme && git add README.md",
     "test:run:1": "echo $(date) > test_1.out",
     "test:run:2": "echo \"the date is $(date)\" > test_2.out",
-    "test:run:no_file": "echo \"Hello world - no file changes here...\""
+    "test:run:no_file": "echo \"Hello world - no file changes here...\"",
+    "release:script": "pnpm build && pnpm prepack"
   },
   "types": "dist/index.d.ts",
   "pnpm": {
