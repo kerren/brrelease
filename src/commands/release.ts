@@ -185,7 +185,6 @@ export default class Release extends Command {
                     ...commitAndTagBody,
                     skip: {
                         tag: true,
-                        bump: true,
                         commit: true,
                     },
                 });
