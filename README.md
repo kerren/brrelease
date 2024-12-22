@@ -5,10 +5,11 @@ brrelease
 [![Version](https://img.shields.io/npm/v/brrelease.svg)](https://npmjs.org/package/brrelease)
 [![Downloads/week](https://img.shields.io/npm/dw/brrelease.svg)](https://npmjs.org/package/brrelease)
 
-This is a CLI that allows you to create releases off any branch and either merge
-back into that branch or into a different branch. It allows you to follow the
-`git-flow` methodology if you want to but also allows you the freedom to create
-release versions on different branches without merging into `main`.
+Short for "Branch Release" - this is a CLI that allows you to create releases 
+off any branch and either merge back into that branch or into a different 
+branch. It allows you to follow the `git-flow` methodology if you want to but 
+also allows you the freedom to create release versions on different branches 
+without merging into `main`.
 
 This project extends the [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version)
 project. So it uses their versioning and bumping logic, but builds a workflow

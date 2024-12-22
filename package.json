@@ -44,7 +44,14 @@
   ],
   "homepage": "https://github.com/kerren/brrelease",
   "keywords": [
-    "oclif"
+    "oclif",
+    "release",
+    "tag",
+    "semantic version",
+    "version",
+    "commit-and-tag-version",
+    "branch",
+    "merge"
   ],
   "license": "MIT",
   "main": "dist/index.js",
