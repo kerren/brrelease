@@ -29,9 +29,9 @@ export default class Release extends Command {
             description: 'The prefix that is used to create release branches (default is "release/")',
             default: 'release/',
         }),
-        'changelog-file-name': Flags.string({
+        'changelog-file-path': Flags.string({
             char: 'c',
-            description: 'The name of the file that the changelog should be written to',
+            description: 'The path to the file that the changelog should be written to',
             default: 'CHANGELOG.md',
         }),
         'skip-changelog': Flags.boolean({
@@ -49,7 +49,7 @@ export default class Release extends Command {
         const gitBinaryPath = flags['git-binary-path'];
 
         const skipChangelog = flags['skip-changelog'];
-        const changeLogFileName = flags['changelog-file-name'];
+        const changelogFilePath = flags['changelog-file-path'];
 
         try {
             const newVersion: string = await commitAndTagVersion({ dryRun: true, silent: true });
@@ -63,7 +63,7 @@ export default class Release extends Command {
             newReleaseBranchSpinner.succeed(`Creating a new release branch ${newVersionWithPrefix}`);
 
             // 2. Create the changelog
-            const changeLogSpinner = ora(`Creating the changelog ${changeLogFileName}`);
+            const changeLogSpinner = ora(`Creating the changelog ${changelogFilePath}`);
             if (skipChangelog) {
                 changeLogSpinner.warn('You have elected to skip changelog creation');
             } else {
@@ -74,8 +74,9 @@ export default class Release extends Command {
                         bump: true,
                         commit: true,
                     },
+                    infile: changelogFilePath,
                 });
-                changeLogSpinner.succeed(`Creating the changelog ${changeLogFileName}`);
+                changeLogSpinner.succeed(`Creating the changelog ${changelogFilePath}`);
             }
         } catch (error) {
             this.log('\n');
