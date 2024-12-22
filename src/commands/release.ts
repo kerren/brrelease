@@ -5,6 +5,8 @@ import commitAndTagVersion from 'commit-and-tag-version';
 import chalk from 'chalk';
 import { gitCreateBranch } from '../shared/git/git-create-branch.js';
 import ora from 'ora';
+import { gitStageChanges } from '../shared/git/git-stage-changes.js';
+import { gitCommitChanges } from '../shared/git/git-commit-changes.js';
 
 export default class Release extends Command {
     static override args = {};
@@ -38,6 +40,10 @@ export default class Release extends Command {
             char: 'C',
             description: 'Skip writing to a changelog file',
             default: false,
+        }),
+        'changelog-commit-message': Flags.string({
+            description: 'The commit message that should be used to commit the changelog file',
+            default: 'generate the changelog',
         }),
     };
 
@@ -77,6 +83,8 @@ export default class Release extends Command {
                     infile: changelogFilePath,
                 });
                 changeLogSpinner.succeed(`Creating the changelog ${changelogFilePath}`);
+                await gitStageChanges(gitBinaryPath);
+                await gitCommitChanges(gitBinaryPath, flags['changelog-commit-message']);
             }
         } catch (error) {
             this.log('\n');
