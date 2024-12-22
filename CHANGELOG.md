@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [1.8.0](https://github.com/kerren/brrelease/compare/v1.7.1...v1.8.0) (2024-12-22)
+
+
+### Features
+
+* **auto-push:** Add the ability to automatically push when running a release ([4ed84dc](https://github.com/kerren/brrelease/commit/4ed84dc1715f05c73663aa4365502e878928dc7e)), closes [#13](https://github.com/kerren/brrelease/issues/13)
+
 ## [1.7.1](https://github.com/kerren/brrelease/compare/v1.7.0...v1.7.1) (2024-12-22)
 
 
