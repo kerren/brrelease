@@ -3,6 +3,8 @@ import { Args, Command, Flags } from '@oclif/core';
 // @ts-expect-error
 import commitAndTagVersion from 'commit-and-tag-version';
 import chalk from 'chalk';
+import { gitCreateBranch } from '../shared/git/git-create-branch.js';
+import ora from 'ora';
 
 export default class Release extends Command {
     static override args = {};
@@ -33,6 +35,11 @@ export default class Release extends Command {
             const newVersion: string = await commitAndTagVersion({ dryRun: true, silent: true });
             const newVersionWithPrefix = `${tagPrefix}${newVersion}`;
             this.log(`The new release version will be ${chalk.green(newVersionWithPrefix)}`);
+
+            const releaseBranchName = `release/${newVersionWithPrefix}`;
+            const newReleaseBranchSpinner = ora(`Creating a new release branch ${newVersionWithPrefix}`).start();
+            await gitCreateBranch(newVersionWithPrefix);
+            newReleaseBranchSpinner.succeed(`Creating a new release branch ${newVersionWithPrefix}`);
         } catch (error) {
             this.error((error as any).message ?? (error as any));
         }
