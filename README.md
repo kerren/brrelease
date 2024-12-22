@@ -29,61 +29,8 @@ USAGE
 <!-- usagestop -->
 # Commands
 <!-- commands -->
-* [`brrelease hello PERSON`](#brrelease-hello-person)
-* [`brrelease hello world`](#brrelease-hello-world)
 * [`brrelease help [COMMAND]`](#brrelease-help-command)
-* [`brrelease plugins`](#brrelease-plugins)
-* [`brrelease plugins add PLUGIN`](#brrelease-plugins-add-plugin)
-* [`brrelease plugins:inspect PLUGIN...`](#brrelease-pluginsinspect-plugin)
-* [`brrelease plugins install PLUGIN`](#brrelease-plugins-install-plugin)
-* [`brrelease plugins link PATH`](#brrelease-plugins-link-path)
-* [`brrelease plugins remove [PLUGIN]`](#brrelease-plugins-remove-plugin)
-* [`brrelease plugins reset`](#brrelease-plugins-reset)
-* [`brrelease plugins uninstall [PLUGIN]`](#brrelease-plugins-uninstall-plugin)
-* [`brrelease plugins unlink [PLUGIN]`](#brrelease-plugins-unlink-plugin)
-* [`brrelease plugins update`](#brrelease-plugins-update)
-
-## `brrelease hello PERSON`
-
-Say hello
-
-```
-USAGE
-  $ brrelease hello PERSON -f <value>
-
-ARGUMENTS
-  PERSON  Person to say hello to
-
-FLAGS
-  -f, --from=<value>  (required) Who is saying hello
-
-DESCRIPTION
-  Say hello
-
-EXAMPLES
-  $ brrelease hello friend --from oclif
-  hello friend from oclif! (./src/commands/hello/index.ts)
-```
-
-_See code: [src/commands/hello/index.ts](https://github.com/kerren/brrelease/blob/v0.0.0/src/commands/hello/index.ts)_
-
-## `brrelease hello world`
-
-Say hello world
-
-```
-USAGE
-  $ brrelease hello world
-
-DESCRIPTION
-  Say hello world
-
-EXAMPLES
-  $ brrelease hello world
-  hello world! (./src/commands/hello/world.ts)
-```
-
-_See code: [src/commands/hello/world.ts](https://github.com/kerren/brrelease/blob/v0.0.0/src/commands/hello/world.ts)_
+* [`brrelease release`](#brrelease-release)
 
 ## `brrelease help [COMMAND]`
 
@@ -105,293 +52,65 @@ DESCRIPTION
 
 _See code: [@oclif/plugin-help](https://github.com/oclif/plugin-help/blob/v6.2.20/src/commands/help.ts)_
 
-## `brrelease plugins`
+## `brrelease release`
 
-List installed plugins.
+Run a release on the branch that you're on
 
 ```
 USAGE
-  $ brrelease plugins [--json] [--core]
+  $ brrelease release [-P <value>] [-G <value>] [-R <value>] [-c <value>] [-C] [--changelog-commit-message
+    <value>] [-r <value>...] [-m <value>] [-s -b <value>] [--bump-files-commit-message <value>] [-p <value>...] [-B
+    <value>...] [-u <value>...] [--release-as major|minor|patch] [--first-release] [--prerelease <value>] [-s]
 
 FLAGS
-  --core  Show core plugins.
-
-GLOBAL FLAGS
-  --json  Format output as json.
+  -B, --bump-file=<value>...                              The files where the version should be bumped with out the
+                                                          previous version being considered (see
+                                                          https://github.com/absolute-version/commit-and-tag-version)
+  -C, --skip-changelog                                    Skip writing to a changelog file
+  -G, --git-binary-path=<value>                           [default: git] The path to the git binary (default is "git"
+                                                          since it assumes it is globally accessible)
+  -P, --tag-prefix=<value>                                [default: v] The prefix that should be before the number on
+                                                          the tag made in git (default is "v")
+  -R, --release-branch-prefix=<value>                     [default: release/] The prefix that is used to create release
+                                                          branches (default is "release/")
+  -b, --merge-into-branch=<value>                         If you would like the release to merge into a different
+                                                          branch, specify it here. The default is the current branch
+                                                          you're on
+  -c, --changelog-file-path=<value>                       [default: CHANGELOG.md] The path to the file that the
+                                                          changelog should be written to
+  -m, --run-script-during-release-commit-message=<value>  [default: chore: generate the release file changes] The commit
+                                                          message that should be used to commit the changed files that
+                                                          occur after running the custom release job
+  -p, --package-file=<value>...                           [default: package.json] The package files that should be used
+                                                          to determine the current version of the project (see
+                                                          https://github.com/absolute-version/commit-and-tag-version)
+  -r, --run-script-during-release=<value>...              One or many scripts that should be run during the release,
+                                                          it's recommended that you make these npm scripts and they
+                                                          don't contain the '"' character
+  -s, --[no-]sign                                         Sign the git commits
+  -s, --skip-merge-back-into-current-branch               If you are merging into a different branch, you can elect to
+                                                          skip merging it back into the current branch you're on
+  -u, --updater=<value>...                                The updater files/scripts that should run during execution
+                                                          (see
+                                                          https://github.com/absolute-version/commit-and-tag-version)
+      --bump-files-commit-message=<value>                 [default: chore: bump the version in project files] The commit
+                                                          message to use when bumping the version in files
+      --changelog-commit-message=<value>                  [default: chore: generate the changelog] The commit message
+                                                          that should be used to commit the changelog file
+      --first-release                                     If this is the first release being created (see
+                                                          https://github.com/absolute-version/commit-and-tag-version)
+      --prerelease=<value>                                The prerelease prefix that should be used if necessary (see
+                                                          https://github.com/absolute-version/commit-and-tag-version)
+      --release-as=<option>                               Specify the type of release (see
+                                                          https://github.com/absolute-version/commit-and-tag-version)
+                                                          <options: major|minor|patch>
 
 DESCRIPTION
-  List installed plugins.
+  Run a release on the branch that you're on
 
 EXAMPLES
-  $ brrelease plugins
+  $ brrelease release
 ```
 
-_See code: [@oclif/plugin-plugins](https://github.com/oclif/plugin-plugins/blob/v5.4.23/src/commands/plugins/index.ts)_
-
-## `brrelease plugins add PLUGIN`
-
-Installs a plugin into brrelease.
-
-```
-USAGE
-  $ brrelease plugins add PLUGIN... [--json] [-f] [-h] [-s | -v]
-
-ARGUMENTS
-  PLUGIN...  Plugin to install.
-
-FLAGS
-  -f, --force    Force npm to fetch remote resources even if a local copy exists on disk.
-  -h, --help     Show CLI help.
-  -s, --silent   Silences npm output.
-  -v, --verbose  Show verbose npm output.
-
-GLOBAL FLAGS
-  --json  Format output as json.
-
-DESCRIPTION
-  Installs a plugin into brrelease.
-
-  Uses npm to install plugins.
-
-  Installation of a user-installed plugin will override a core plugin.
-
-  Use the BRRELEASE_NPM_LOG_LEVEL environment variable to set the npm loglevel.
-  Use the BRRELEASE_NPM_REGISTRY environment variable to set the npm registry.
-
-ALIASES
-  $ brrelease plugins add
-
-EXAMPLES
-  Install a plugin from npm registry.
-
-    $ brrelease plugins add myplugin
-
-  Install a plugin from a github url.
-
-    $ brrelease plugins add https://github.com/someuser/someplugin
-
-  Install a plugin from a github slug.
-
-    $ brrelease plugins add someuser/someplugin
-```
-
-## `brrelease plugins:inspect PLUGIN...`
-
-Displays installation properties of a plugin.
-
-```
-USAGE
-  $ brrelease plugins inspect PLUGIN...
-
-ARGUMENTS
-  PLUGIN...  [default: .] Plugin to inspect.
-
-FLAGS
-  -h, --help     Show CLI help.
-  -v, --verbose
-
-GLOBAL FLAGS
-  --json  Format output as json.
-
-DESCRIPTION
-  Displays installation properties of a plugin.
-
-EXAMPLES
-  $ brrelease plugins inspect myplugin
-```
-
-_See code: [@oclif/plugin-plugins](https://github.com/oclif/plugin-plugins/blob/v5.4.23/src/commands/plugins/inspect.ts)_
-
-## `brrelease plugins install PLUGIN`
-
-Installs a plugin into brrelease.
-
-```
-USAGE
-  $ brrelease plugins install PLUGIN... [--json] [-f] [-h] [-s | -v]
-
-ARGUMENTS
-  PLUGIN...  Plugin to install.
-
-FLAGS
-  -f, --force    Force npm to fetch remote resources even if a local copy exists on disk.
-  -h, --help     Show CLI help.
-  -s, --silent   Silences npm output.
-  -v, --verbose  Show verbose npm output.
-
-GLOBAL FLAGS
-  --json  Format output as json.
-
-DESCRIPTION
-  Installs a plugin into brrelease.
-
-  Uses npm to install plugins.
-
-  Installation of a user-installed plugin will override a core plugin.
-
-  Use the BRRELEASE_NPM_LOG_LEVEL environment variable to set the npm loglevel.
-  Use the BRRELEASE_NPM_REGISTRY environment variable to set the npm registry.
-
-ALIASES
-  $ brrelease plugins add
-
-EXAMPLES
-  Install a plugin from npm registry.
-
-    $ brrelease plugins install myplugin
-
-  Install a plugin from a github url.
-
-    $ brrelease plugins install https://github.com/someuser/someplugin
-
-  Install a plugin from a github slug.
-
-    $ brrelease plugins install someuser/someplugin
-```
-
-_See code: [@oclif/plugin-plugins](https://github.com/oclif/plugin-plugins/blob/v5.4.23/src/commands/plugins/install.ts)_
-
-## `brrelease plugins link PATH`
-
-Links a plugin into the CLI for development.
-
-```
-USAGE
-  $ brrelease plugins link PATH [-h] [--install] [-v]
-
-ARGUMENTS
-  PATH  [default: .] path to plugin
-
-FLAGS
-  -h, --help          Show CLI help.
-  -v, --verbose
-      --[no-]install  Install dependencies after linking the plugin.
-
-DESCRIPTION
-  Links a plugin into the CLI for development.
-
-  Installation of a linked plugin will override a user-installed or core plugin.
-
-  e.g. If you have a user-installed or core plugin that has a 'hello' command, installing a linked plugin with a 'hello'
-  command will override the user-installed or core plugin implementation. This is useful for development work.
-
-
-EXAMPLES
-  $ brrelease plugins link myplugin
-```
-
-_See code: [@oclif/plugin-plugins](https://github.com/oclif/plugin-plugins/blob/v5.4.23/src/commands/plugins/link.ts)_
-
-## `brrelease plugins remove [PLUGIN]`
-
-Removes a plugin from the CLI.
-
-```
-USAGE
-  $ brrelease plugins remove [PLUGIN...] [-h] [-v]
-
-ARGUMENTS
-  PLUGIN...  plugin to uninstall
-
-FLAGS
-  -h, --help     Show CLI help.
-  -v, --verbose
-
-DESCRIPTION
-  Removes a plugin from the CLI.
-
-ALIASES
-  $ brrelease plugins unlink
-  $ brrelease plugins remove
-
-EXAMPLES
-  $ brrelease plugins remove myplugin
-```
-
-## `brrelease plugins reset`
-
-Remove all user-installed and linked plugins.
-
-```
-USAGE
-  $ brrelease plugins reset [--hard] [--reinstall]
-
-FLAGS
-  --hard       Delete node_modules and package manager related files in addition to uninstalling plugins.
-  --reinstall  Reinstall all plugins after uninstalling.
-```
-
-_See code: [@oclif/plugin-plugins](https://github.com/oclif/plugin-plugins/blob/v5.4.23/src/commands/plugins/reset.ts)_
-
-## `brrelease plugins uninstall [PLUGIN]`
-
-Removes a plugin from the CLI.
-
-```
-USAGE
-  $ brrelease plugins uninstall [PLUGIN...] [-h] [-v]
-
-ARGUMENTS
-  PLUGIN...  plugin to uninstall
-
-FLAGS
-  -h, --help     Show CLI help.
-  -v, --verbose
-
-DESCRIPTION
-  Removes a plugin from the CLI.
-
-ALIASES
-  $ brrelease plugins unlink
-  $ brrelease plugins remove
-
-EXAMPLES
-  $ brrelease plugins uninstall myplugin
-```
-
-_See code: [@oclif/plugin-plugins](https://github.com/oclif/plugin-plugins/blob/v5.4.23/src/commands/plugins/uninstall.ts)_
-
-## `brrelease plugins unlink [PLUGIN]`
-
-Removes a plugin from the CLI.
-
-```
-USAGE
-  $ brrelease plugins unlink [PLUGIN...] [-h] [-v]
-
-ARGUMENTS
-  PLUGIN...  plugin to uninstall
-
-FLAGS
-  -h, --help     Show CLI help.
-  -v, --verbose
-
-DESCRIPTION
-  Removes a plugin from the CLI.
-
-ALIASES
-  $ brrelease plugins unlink
-  $ brrelease plugins remove
-
-EXAMPLES
-  $ brrelease plugins unlink myplugin
-```
-
-## `brrelease plugins update`
-
-Update installed plugins.
-
-```
-USAGE
-  $ brrelease plugins update [-h] [-v]
-
-FLAGS
-  -h, --help     Show CLI help.
-  -v, --verbose
-
-DESCRIPTION
-  Update installed plugins.
-```
-
-_See code: [@oclif/plugin-plugins](https://github.com/oclif/plugin-plugins/blob/v5.4.23/src/commands/plugins/update.ts)_
+_See code: [src/commands/release.ts](https://github.com/kerren/brrelease/blob/v0.0.0/src/commands/release.ts)_
 <!-- commandsstop -->
