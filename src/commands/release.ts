@@ -43,7 +43,7 @@ export default class Release extends Command {
         }),
         'changelog-commit-message': Flags.string({
             description: 'The commit message that should be used to commit the changelog file',
-            default: 'generate the changelog',
+            default: 'chore: generate the changelog',
         }),
     };
 
