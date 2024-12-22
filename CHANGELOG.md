@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [1.7.1](https://github.com/kerren/brrelease/compare/v1.7.0...v1.7.1) (2024-12-22)
+
+
+### Bug Fixes
+
+* **merge:** Add additional commentry around the merge into branch flag ([29844ac](https://github.com/kerren/brrelease/commit/29844ac02521cdac90f27fa3bee6536f91553c2b))
+
 ## [1.7.0](https://github.com/kerren/brrelease/compare/v1.6.0...v1.7.0) (2024-12-22)
 
 
