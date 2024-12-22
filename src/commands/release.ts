@@ -9,6 +9,8 @@ import { gitStageChanges } from '../shared/git/git-stage-changes.js';
 import { gitCommitChanges } from '../shared/git/git-commit-changes.js';
 import { spawnCommand } from '../shared/spawn-command.js';
 import { gitCheckForChanges } from '../shared/git/git-check-for-changes.js';
+import { gitGetCurrentBranch } from '../shared/git/git-get-current-branch.js';
+import Flag = Command.Flag;
 
 export default class Release extends Command {
     static override args = {};
@@ -57,6 +59,15 @@ export default class Release extends Command {
             description: `The commit message that should be used to commit the changed files that occur after running the custom release job`,
             default: 'chore: generate the release file changes',
         }),
+        'merge-into-branch': Flags.string({
+            char: 'b',
+            description: `If you would like the release to merge into a different branch, specify it here. The default is the current branch you're on`,
+        }),
+        'skip-merge-back-into-current-branch': Flags.boolean({
+            char: 's',
+            description: `If you are merging into a different branch, you can elect to skip merging it back into the current branch you're on`,
+            dependsOn: ['merge-into-branch'],
+        }),
     };
 
     public async run(): Promise<void> {
@@ -70,6 +81,8 @@ export default class Release extends Command {
             const newVersion: string = await commitAndTagVersion({ dryRun: true, silent: true });
             const newVersionWithPrefix = `${tagPrefix}${newVersion}`;
             this.log(`The new release version will be ${chalk.green(newVersionWithPrefix)}`);
+
+            const { stdout: currentBranch } = await gitGetCurrentBranch(gitBinaryPath);
 
             // 1. Create the new release branch
             const releaseBranchName = `${releaseBranchPrefix}${newVersionWithPrefix}`;
