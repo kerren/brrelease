@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [1.2.0](https://github.com/kerren/brrelease/compare/v1.1.0...v1.2.0) (2024-12-22)
+
+
+### Features
+
+* **git:** Add the --no-ff flag to the branch merges ([707c753](https://github.com/kerren/brrelease/commit/707c7533a4b8cd3c3dcccc6e23189e50b85d456e))
+* **release:** Add the release script that rebuilds the readme ([d6a1ff3](https://github.com/kerren/brrelease/commit/d6a1ff360e260ead2d612c79c9870fc5a61dfced))
+* **scripts:** Run the additional scripts AFTER the version bump, as they may be reliant on the package.json version change ([df94b51](https://github.com/kerren/brrelease/commit/df94b516432e5e58c59d3d1b17e63f97bb167db8))
+
 ## [1.1.0](https://github.com/kerren/brrelease/compare/v1.0.0...v1.1.0) (2024-12-22)
 
 
