@@ -11,6 +11,9 @@ import { spawnCommand } from '../shared/spawn-command.js';
 import { gitCheckForChanges } from '../shared/git/git-check-for-changes.js';
 import { gitGetCurrentBranch } from '../shared/git/git-get-current-branch.js';
 import Flag = Command.Flag;
+import { gitCheckoutBranch } from '../shared/git/git-checkout-branch.js';
+import { gitMergeBranch } from '../shared/git/git-merge-branch.js';
+import { gitDeleteBranch } from '../shared/git/git-delete-branch.js';
 
 export default class Release extends Command {
     static override args = {};
@@ -156,12 +159,31 @@ export default class Release extends Command {
             await gitCommitChanges(gitBinaryPath, flags['bump-files-commit-message']);
 
             // 5. Merge branch
-            const mergeBranchName = flags['merge-into-branch'];
-            if (mergeBranchName) {
+            const isDifferentMergeBranch = !!flags['merge-into-branch'];
+            const mergeBranchName = flags['merge-into-branch'] ?? currentBranch;
+            const mergeSpinner = ora(`Merging the release into branch ${mergeBranchName}`).start();
+            if (isDifferentMergeBranch) {
                 // We need to merge this into a DIFFERENT branch to what we started from
+                await gitCheckoutBranch(gitBinaryPath, mergeBranchName);
+                await gitMergeBranch(gitBinaryPath, releaseBranchName);
+                mergeSpinner.succeed(`Merging the release into branch ${mergeBranchName}`);
+
+                if (!flags['skip-merge-back-into-current-branch']) {
+                    mergeSpinner.start(`Merging the release into branch ${currentBranch}`);
+                    await gitCheckoutBranch(gitBinaryPath, currentBranch);
+                    await gitMergeBranch(gitBinaryPath, releaseBranchName);
+                    mergeSpinner.succeed(`Merging the release into branch ${currentBranch}`);
+                }
             } else {
                 // We are merging into the current branch
+                await gitCheckoutBranch(gitBinaryPath, currentBranch);
+                await gitMergeBranch(gitBinaryPath, releaseBranchName);
+                mergeSpinner.succeed(`Merging the release into branch ${mergeBranchName}`);
             }
+
+            mergeSpinner.start(`Delete release branch ${releaseBranchName}`);
+            await gitDeleteBranch(gitBinaryPath, releaseBranchName);
+            mergeSpinner.succeed(`Delete release branch ${releaseBranchName}`);
 
             // 6. Merge base branch if necessary
             // TODO: implement this
