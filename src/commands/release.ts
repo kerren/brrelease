@@ -55,7 +55,7 @@ export default class Release extends Command {
         'run-script-during-release-commit-message': Flags.string({
             char: 'm',
             description: `The commit message that should be used to commit the changed files that occur after running the custom release job`,
-            default: 'chore: generate release file changes',
+            default: 'chore: generate the release file changes',
         }),
     };
 
