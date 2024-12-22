@@ -24,21 +24,28 @@ export default class Release extends Command {
             description: 'The path to the git binary (default is "git" since it assumes it is globally accessible)',
             default: 'git',
         }),
+        'release-branch-prefix': Flags.string({
+            char: 'R',
+            description: 'The prefix that is used to create release branches (default is "release/")',
+            default: 'release/',
+        }),
     };
 
     public async run(): Promise<void> {
         const { args, flags } = await this.parse(Release);
 
         const tagPrefix = flags['tag-prefix'];
+        const releaseBranchPrefix = flags['release-branch-prefix'];
+        const gitBinaryPath = flags['git-binary-path'];
 
         try {
             const newVersion: string = await commitAndTagVersion({ dryRun: true, silent: true });
             const newVersionWithPrefix = `${tagPrefix}${newVersion}`;
             this.log(`The new release version will be ${chalk.green(newVersionWithPrefix)}`);
 
-            const releaseBranchName = `release/${newVersionWithPrefix}`;
+            const releaseBranchName = `${releaseBranchPrefix}${newVersionWithPrefix}`;
             const newReleaseBranchSpinner = ora(`Creating a new release branch ${releaseBranchName}`).start();
-            await gitCreateBranch(releaseBranchName);
+            await gitCreateBranch(gitBinaryPath, releaseBranchName);
             newReleaseBranchSpinner.succeed(`Creating a new release branch ${newVersionWithPrefix}`);
         } catch (error) {
             this.log('\n');
