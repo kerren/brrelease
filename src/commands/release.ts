@@ -85,6 +85,7 @@ export default class Release extends Command {
             char: 'B',
             description: `The files where the version should be bumped with out the previous version being considered (see https://github.com/absolute-version/commit-and-tag-version)`,
             multiple: true,
+            default: ['package.json'],
         }),
         updater: Flags.string({
             char: 'u',
