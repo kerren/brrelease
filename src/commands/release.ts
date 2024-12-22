@@ -65,7 +65,7 @@ export default class Release extends Command {
             // 2. Create the changelog
             const changeLogSpinner = ora(`Creating the changelog ${changeLogFileName}`);
             if (skipChangelog) {
-                changeLogSpinner.warn('Skipping changelog creation');
+                changeLogSpinner.warn('You have elected to skip changelog creation');
             } else {
                 await commitAndTagVersion({
                     silent: true,
