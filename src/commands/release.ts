@@ -85,7 +85,6 @@ export default class Release extends Command {
             char: 'B',
             description: `The files where the version should be bumped with out the previous version being considered (see https://github.com/absolute-version/commit-and-tag-version)`,
             multiple: true,
-            default: ['package.json'],
         }),
         updater: Flags.string({
             char: 'u',
@@ -181,6 +180,8 @@ export default class Release extends Command {
 
             // 4. Run the bump files?
             const bumpSpinner = ora(`Bumping version number to ${newVersionWithPrefix}`);
+            const packageFiles = flags['package-file'] ?? [];
+            const bumpFiles = flags['bump-file'] ?? [];
             await commitAndTagVersion({
                 silent: true,
                 skip: {
@@ -188,8 +189,8 @@ export default class Release extends Command {
                     changelog: true,
                     commit: true,
                 },
-                bumpFiles: flags['bump-file'] ?? [],
-                packageFiles: flags['package-file'] ?? [],
+                bumpFiles: [...bumpFiles, ...packageFiles],
+                packageFiles: packageFiles,
                 updaters: flags['updater'] ?? [],
                 sign,
             });
