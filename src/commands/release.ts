@@ -122,6 +122,7 @@ export default class Release extends Command {
             const packageFiles = (flags['package-file'] ?? []).filter((f) => f !== '');
             const bumpFiles = (flags['bump-file'] ?? []).filter((f) => f !== '');
             const updaters = (flags['updater'] ?? []).filter((f) => f !== '');
+            const firstRelease = flags['first-release'] ?? undefined;
 
             const changelogFilePath = flags['changelog-file-path'];
 
@@ -132,7 +133,7 @@ export default class Release extends Command {
                 updaters,
                 sign,
                 releaseAs: flags['release-as'] ?? undefined,
-                firstRelease: flags['first-release'] ?? undefined,
+                firstRelease,
                 prerelease: flags['prerelease'] ?? undefined,
             };
 
@@ -195,7 +196,7 @@ export default class Release extends Command {
             // 4. Run the bump files
             const numFiles = packageFiles.length + bumpFiles.length + updaters.length;
             const bumpSpinner = ora(`Bumping version number to ${newVersionWithPrefix}`);
-            if (numFiles > 0) {
+            if (numFiles > 0 && !firstRelease) {
                 await commitAndTagVersion({
                     ...commitAndTagBody,
                     skip: {
