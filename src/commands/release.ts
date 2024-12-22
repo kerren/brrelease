@@ -38,7 +38,7 @@ export default class Release extends Command {
 
             const releaseBranchName = `release/${newVersionWithPrefix}`;
             const newReleaseBranchSpinner = ora(`Creating a new release branch ${newVersionWithPrefix}`).start();
-            await gitCreateBranch(newVersionWithPrefix);
+            await gitCreateBranch(releaseBranchName);
             newReleaseBranchSpinner.succeed(`Creating a new release branch ${newVersionWithPrefix}`);
         } catch (error) {
             this.error((error as any).message ?? (error as any));
