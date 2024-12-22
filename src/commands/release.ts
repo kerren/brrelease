@@ -181,12 +181,9 @@ export default class Release extends Command {
                 mergeSpinner.succeed(`Merging the release into branch ${mergeBranchName}`);
             }
 
-            // mergeSpinner.start(`Delete release branch ${releaseBranchName}`);
-            // await gitDeleteBranch(gitBinaryPath, releaseBranchName);
-            // mergeSpinner.succeed(`Delete release branch ${releaseBranchName}`);
-
-            // 6. Merge base branch if necessary
-            // TODO: implement this
+            mergeSpinner.start(`Delete release branch ${releaseBranchName}`);
+            await gitDeleteBranch(gitBinaryPath, releaseBranchName);
+            mergeSpinner.succeed(`Delete release branch ${releaseBranchName}`);
         } catch (error) {
             this.log('\n');
             this.error((error as any).stderr ?? (error as any).message ?? error);
