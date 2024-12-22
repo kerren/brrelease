@@ -75,6 +75,38 @@ export default class Release extends Command {
             description: 'The commit message to use when bumping the version in files',
             default: 'chore: bump the version in project files',
         }),
+        'package-file': Flags.string({
+            char: 'p',
+            description: `The package files that should be used to determine the current version of the project (see https://github.com/absolute-version/commit-and-tag-version)`,
+            multiple: true,
+        }),
+        'bump-file': Flags.string({
+            char: 'B',
+            description: `The files where the version should be bumped with out the previous version being considered (see https://github.com/absolute-version/commit-and-tag-version)`,
+            multiple: true,
+        }),
+        updater: Flags.string({
+            char: 'u',
+            description: `The updater files/scripts that should run during execution (see https://github.com/absolute-version/commit-and-tag-version)`,
+            multiple: true,
+        }),
+        'release-as': Flags.string({
+            description: `Specify the type of release (see https://github.com/absolute-version/commit-and-tag-version)`,
+            options: ['major', 'minor', 'patch'],
+        }),
+        'first-release': Flags.boolean({
+            description: `If this is the first release being created (see https://github.com/absolute-version/commit-and-tag-version)`,
+            default: false,
+        }),
+        prerelease: Flags.string({
+            description: `The prerelease prefix that should be used if necessary (see https://github.com/absolute-version/commit-and-tag-version)`,
+        }),
+        sign: Flags.boolean({
+            char: 's',
+            description: `Sign the git commits`,
+            default: true,
+            allowNo: true,
+        }),
     };
 
     public async run(): Promise<void> {
@@ -84,6 +116,7 @@ export default class Release extends Command {
             const tagPrefix = flags['tag-prefix'];
             const releaseBranchPrefix = flags['release-branch-prefix'];
             const gitBinaryPath = flags['git-binary-path'];
+            const sign = flags['sign'];
 
             const newVersion: string = await commitAndTagVersion({ dryRun: true, silent: true });
             const newVersionWithPrefix = `${tagPrefix}${newVersion}`;
@@ -113,7 +146,7 @@ export default class Release extends Command {
                 const checkForChanges = await gitCheckForChanges(gitBinaryPath);
                 if (checkForChanges) {
                     await gitStageChanges(gitBinaryPath);
-                    await gitCommitChanges(gitBinaryPath, flags['run-script-during-release-commit-message']);
+                    await gitCommitChanges(gitBinaryPath, flags['run-script-during-release-commit-message'], sign);
                     additionalUserScriptsSpinner.succeed(`Running additional user scripts (${additionalUserScripts.length} scripts)`);
                 } else {
                     additionalUserScriptsSpinner.warn(
@@ -137,10 +170,11 @@ export default class Release extends Command {
                         commit: true,
                     },
                     infile: changelogFilePath,
+                    sign,
                 });
                 changeLogSpinner.succeed(`Creating the changelog ${changelogFilePath}`);
                 await gitStageChanges(gitBinaryPath);
-                await gitCommitChanges(gitBinaryPath, flags['changelog-commit-message']);
+                await gitCommitChanges(gitBinaryPath, flags['changelog-commit-message'], sign);
             }
 
             // 4. Run the bump files?
@@ -152,10 +186,13 @@ export default class Release extends Command {
                     changelog: true,
                     commit: true,
                 },
-                infile: changelogFilePath,
+                bumpFiles: flags['bump-file'] ?? [],
+                packageFiles: flags['package-file'] ?? [],
+                updaters: flags['updater'] ?? [],
+                sign,
             });
             await gitStageChanges(gitBinaryPath);
-            await gitCommitChanges(gitBinaryPath, flags['bump-files-commit-message']);
+            await gitCommitChanges(gitBinaryPath, flags['bump-files-commit-message'], sign);
             bumpSpinner.succeed(`Bumping version number to ${newVersionWithPrefix}`);
 
             // 5. Merge branch
@@ -165,19 +202,19 @@ export default class Release extends Command {
             if (isDifferentMergeBranch) {
                 // We need to merge this into a DIFFERENT branch to what we started from
                 await gitCheckoutBranch(gitBinaryPath, mergeBranchName);
-                await gitMergeBranch(gitBinaryPath, releaseBranchName);
+                await gitMergeBranch(gitBinaryPath, releaseBranchName, sign);
                 mergeSpinner.succeed(`Merging the release into branch ${mergeBranchName}`);
 
                 if (!flags['skip-merge-back-into-current-branch']) {
                     mergeSpinner.start(`Merging the release into branch ${currentBranch}`);
                     await gitCheckoutBranch(gitBinaryPath, currentBranch);
-                    await gitMergeBranch(gitBinaryPath, releaseBranchName);
+                    await gitMergeBranch(gitBinaryPath, releaseBranchName, sign);
                     mergeSpinner.succeed(`Merging the release into branch ${currentBranch}`);
                 }
             } else {
                 // We are merging into the current branch
                 await gitCheckoutBranch(gitBinaryPath, currentBranch);
-                await gitMergeBranch(gitBinaryPath, releaseBranchName);
+                await gitMergeBranch(gitBinaryPath, releaseBranchName, sign);
                 mergeSpinner.succeed(`Merging the release into branch ${mergeBranchName}`);
             }
 
