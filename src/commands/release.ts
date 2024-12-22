@@ -8,6 +8,7 @@ import ora from 'ora';
 import { gitStageChanges } from '../shared/git/git-stage-changes.js';
 import { gitCommitChanges } from '../shared/git/git-commit-changes.js';
 import { spawnCommand } from '../shared/spawn-command.js';
+import { gitCheckForChanges } from '../shared/git/git-check-for-changes.js';
 
 export default class Release extends Command {
     static override args = {};
@@ -51,6 +52,11 @@ export default class Release extends Command {
             description: `One or many scripts that should be run during the release, it's recommended that you make these npm scripts and they don't contain the '"' character`,
             multiple: true,
         }),
+        'run-script-during-release-commit-message': Flags.string({
+            char: 'm',
+            description: `The commit message that should be used to commit the changed files that occur after running the custom release job`,
+            default: 'chore: generate release file changes',
+        }),
     };
 
     public async run(): Promise<void> {
@@ -83,7 +89,17 @@ export default class Release extends Command {
                     this.log(spawnResult.stdout);
                     scriptSpinner.succeed();
                 }
-                additionalUserScriptsSpinner.succeed(`Running additional user scripts (${additionalUserScripts.length} scripts)`);
+
+                const checkForChanges = await gitCheckForChanges(gitBinaryPath);
+                if (checkForChanges) {
+                    await gitStageChanges(gitBinaryPath);
+                    await gitCommitChanges(gitBinaryPath, flags['run-script-during-release-commit-message']);
+                    additionalUserScriptsSpinner.succeed(`Running additional user scripts (${additionalUserScripts.length} scripts)`);
+                } else {
+                    additionalUserScriptsSpinner.warn(
+                        `Running additional user scripts (${additionalUserScripts.length} scripts) - no file changes found!`,
+                    );
+                }
             }
 
             // 3. Create the changelog
