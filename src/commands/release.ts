@@ -1,7 +1,4 @@
 import { Command, Flags } from '@oclif/core';
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-expect-error
-import commitAndTagVersion from 'commit-and-tag-version';
 import chalk from 'chalk';
 import { gitCreateBranch } from '../shared/git/git-create-branch.js';
 import ora from 'ora';
@@ -14,6 +11,7 @@ import { gitCheckoutBranch } from '../shared/git/git-checkout-branch.js';
 import { gitMergeBranch } from '../shared/git/git-merge-branch.js';
 import { gitDeleteBranch } from '../shared/git/git-delete-branch.js';
 import { gitCreateTag } from '../shared/git/git-create-tag.js';
+import { commitAndTagVersion } from '../shared/commit-and-tag-version.js';
 
 export default class Release extends Command {
     static override args = {};
@@ -137,7 +135,7 @@ export default class Release extends Command {
                 prerelease: flags['prerelease'] ?? undefined,
             };
 
-            const newVersion: string = await commitAndTagVersion({ ...commitAndTagBody, dryRun: true });
+            const { newVersion } = await commitAndTagVersion({ ...commitAndTagBody, dryRun: true });
             const newVersionWithPrefix = `${tagPrefix}${newVersion}`;
             this.log(`The new release version will be ${chalk.green(newVersionWithPrefix)}`);
 
