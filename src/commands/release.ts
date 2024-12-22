@@ -17,12 +17,17 @@ export default class Release extends Command {
             description: 'The prefix that should be before the number on the tag made in git (default is "v")',
             default: 'v',
         }),
+        'git-binary-path': Flags.string({
+            char: 'G',
+            description: 'The path to the git binary (default is "git" since it assumes it is globally accessible)',
+            default: 'git',
+        }),
     };
 
     public async run(): Promise<void> {
         const { args, flags } = await this.parse(Release);
 
-        const tagPrefix = flags['tag-prefix'] as string;
+        const tagPrefix = flags['tag-prefix'];
 
         try {
             const newVersion: string = await commitAndTagVersion({ dryRun: true, silent: true });
