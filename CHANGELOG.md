@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [1.6.0](https://github.com/kerren/brrelease/compare/v1.5.0...v1.6.0) (2024-12-22)
+
+
+### Features
+
+* **patch:** Use the patch-package library so that npx supports the change ([8267dc1](https://github.com/kerren/brrelease/commit/8267dc14246b813a7d8672b6b66464b61e754207)), closes [#11](https://github.com/kerren/brrelease/issues/11)
+
 ## [1.5.0](https://github.com/kerren/brrelease/compare/v1.1.0...v1.5.0) (2024-12-22)
 
 

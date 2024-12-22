@@ -1,7 +1,7 @@
-diff --git a/index.js b/index.js
-index ecb193458a40f7faf401426a634eb9873241601f..53070cfd5e86868d6be7ed9a327c7bbe09ec4982 100755
---- a/index.js
-+++ b/index.js
+diff --git a/node_modules/commit-and-tag-version/index.js b/node_modules/commit-and-tag-version/index.js
+index ecb1934..53070cf 100755
+--- a/node_modules/commit-and-tag-version/index.js
++++ b/node_modules/commit-and-tag-version/index.js
 @@ -84,9 +84,10 @@ module.exports = async function standardVersion(argv) {
      }
  
@@ -14,18 +14,18 @@ index ecb193458a40f7faf401426a634eb9873241601f..53070cfd5e86868d6be7ed9a327c7bbe
    } catch (err) {
      printError(args, err.message);
      throw err;
-diff --git a/lib/lifecycles/changelog.js b/lib/lifecycles/changelog.js
-index fcdd13bd473b2e944fe45813289bf84a3a33259f..22368696f8529e075f3bdb4e534578b43dd44f32 100644
---- a/lib/lifecycles/changelog.js
-+++ b/lib/lifecycles/changelog.js
+diff --git a/node_modules/commit-and-tag-version/lib/lifecycles/changelog.js b/node_modules/commit-and-tag-version/lib/lifecycles/changelog.js
+index fcdd13b..fd2a780 100644
+--- a/node_modules/commit-and-tag-version/lib/lifecycles/changelog.js
++++ b/node_modules/commit-and-tag-version/lib/lifecycles/changelog.js
 @@ -11,8 +11,9 @@ const START_OF_LAST_RELEASE_PATTERN =
  async function Changelog(args, newVersion) {
    if (args.skip.changelog) return;
    await runLifecycleScript(args, 'prechangelog');
 -  await outputChangelog(args, newVersion);
-+  const content = await outputChangelog(args, newVersion);
++  const changelogOutput = await outputChangelog(args, newVersion);
    await runLifecycleScript(args, 'postchangelog');
-+  return content;
++  return changelogOutput;
  }
  
  Changelog.START_OF_LAST_RELEASE_PATTERN = START_OF_LAST_RELEASE_PATTERN;
