@@ -12,6 +12,7 @@ import { gitMergeBranch } from '../shared/git/git-merge-branch.js';
 import { gitDeleteBranch } from '../shared/git/git-delete-branch.js';
 import { gitCreateTag } from '../shared/git/git-create-tag.js';
 import { commitAndTagVersion } from '../shared/commit-and-tag-version.js';
+import { gitStageFile } from '../shared/git/git-stage-file.js';
 
 export default class Release extends Command {
     static override args = {};
@@ -189,7 +190,7 @@ export default class Release extends Command {
                     },
                 });
                 changeLogSpinner.succeed(`Creating the changelog ${changelogFilePath}`);
-                await gitStageChanges(gitBinaryPath);
+                await gitStageFile(gitBinaryPath, changelogFilePath);
                 await gitCommitChanges(gitBinaryPath, flags['changelog-commit-message'], sign);
             }
 
