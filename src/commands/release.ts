@@ -79,6 +79,7 @@ export default class Release extends Command {
             char: 'p',
             description: `The package files that should be used to determine the current version of the project (see https://github.com/absolute-version/commit-and-tag-version)`,
             multiple: true,
+            default: ['package.json'],
         }),
         'bump-file': Flags.string({
             char: 'B',
