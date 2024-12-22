@@ -1,7 +1,4 @@
 import { Command, Flags } from '@oclif/core';
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-expect-error
-import commitAndTagVersion from 'commit-and-tag-version';
 import chalk from 'chalk';
 import { gitCreateBranch } from '../shared/git/git-create-branch.js';
 import ora from 'ora';
@@ -14,6 +11,9 @@ import { gitCheckoutBranch } from '../shared/git/git-checkout-branch.js';
 import { gitMergeBranch } from '../shared/git/git-merge-branch.js';
 import { gitDeleteBranch } from '../shared/git/git-delete-branch.js';
 import { gitCreateTag } from '../shared/git/git-create-tag.js';
+import { commitAndTagVersion } from '../shared/commit-and-tag-version.js';
+import { gitStageFile } from '../shared/git/git-stage-file.js';
+import { gitDiscardAllUnstagedChanges } from '../shared/git/git-discard-all-unstaged-changes.js';
 
 export default class Release extends Command {
     static override args = {};
@@ -137,7 +137,10 @@ export default class Release extends Command {
                 prerelease: flags['prerelease'] ?? undefined,
             };
 
-            const newVersion: string = await commitAndTagVersion({ ...commitAndTagBody, dryRun: true });
+            const dryRun = await commitAndTagVersion({ ...commitAndTagBody, dryRun: true });
+            const newVersion = dryRun.newVersion!;
+            const changelogOutput = dryRun.changelogOutput!;
+
             const newVersionWithPrefix = `${tagPrefix}${newVersion}`;
             this.log(`The new release version will be ${chalk.green(newVersionWithPrefix)}`);
 
@@ -184,13 +187,13 @@ export default class Release extends Command {
                     ...commitAndTagBody,
                     skip: {
                         tag: true,
-                        bump: true,
                         commit: true,
                     },
                 });
                 changeLogSpinner.succeed(`Creating the changelog ${changelogFilePath}`);
-                await gitStageChanges(gitBinaryPath);
+                await gitStageFile(gitBinaryPath, changelogFilePath);
                 await gitCommitChanges(gitBinaryPath, flags['changelog-commit-message'], sign);
+                await gitDiscardAllUnstagedChanges(gitBinaryPath);
             }
 
             // 4. Run the bump files
@@ -242,6 +245,11 @@ export default class Release extends Command {
             mergeSpinner.succeed(`Delete release branch ${releaseBranchName}`);
         } catch (error) {
             this.log('\n');
+            const stringErrorMessage = (error as any).stderr ?? (error as any).message;
+            if (!stringErrorMessage) {
+                console.error('An error has occurred with an unknown structure...');
+                console.error(error);
+            }
             this.error((error as any).stderr ?? (error as any).message ?? error);
         }
     }

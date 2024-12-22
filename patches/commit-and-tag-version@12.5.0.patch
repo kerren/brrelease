@@ -1,12 +1,40 @@
 diff --git a/index.js b/index.js
-index ecb193458a40f7faf401426a634eb9873241601f..c0bd2d6ea939d6cfc04e7d59c3f00ed268a5d3ee 100755
+index ecb193458a40f7faf401426a634eb9873241601f..53070cfd5e86868d6be7ed9a327c7bbe09ec4982 100755
 --- a/index.js
 +++ b/index.js
-@@ -87,6 +87,7 @@ module.exports = async function standardVersion(argv) {
-     await changelog(args, newVersion);
+@@ -84,9 +84,10 @@ module.exports = async function standardVersion(argv) {
+     }
+ 
+     const newVersion = await bump(args, version);
+-    await changelog(args, newVersion);
++    const changelogOutput = await changelog(args, newVersion);
      await commit(args, newVersion);
      await tag(newVersion, pkg ? pkg.private : false, args);
-+    return newVersion;
++    return { newVersion, changelogOutput };
    } catch (err) {
      printError(args, err.message);
      throw err;
+diff --git a/lib/lifecycles/changelog.js b/lib/lifecycles/changelog.js
+index fcdd13bd473b2e944fe45813289bf84a3a33259f..22368696f8529e075f3bdb4e534578b43dd44f32 100644
+--- a/lib/lifecycles/changelog.js
++++ b/lib/lifecycles/changelog.js
+@@ -11,8 +11,9 @@ const START_OF_LAST_RELEASE_PATTERN =
+ async function Changelog(args, newVersion) {
+   if (args.skip.changelog) return;
+   await runLifecycleScript(args, 'prechangelog');
+-  await outputChangelog(args, newVersion);
++  const content = await outputChangelog(args, newVersion);
+   await runLifecycleScript(args, 'postchangelog');
++  return content;
+ }
+ 
+ Changelog.START_OF_LAST_RELEASE_PATTERN = START_OF_LAST_RELEASE_PATTERN;
+@@ -95,7 +96,7 @@ function outputChangelog(args, newVersion) {
+             '\n' +
+             (content + oldContentBody).replace(/\n+$/, '\n'),
+         );
+-      return resolve();
++      return resolve(content);
+     });
+   });
+ }
