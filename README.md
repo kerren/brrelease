@@ -5,10 +5,11 @@ brrelease
 [![Version](https://img.shields.io/npm/v/brrelease.svg)](https://npmjs.org/package/brrelease)
 [![Downloads/week](https://img.shields.io/npm/dw/brrelease.svg)](https://npmjs.org/package/brrelease)
 
-This is a CLI that allows you to create releases off any branch and either merge
-back into that branch or into a different branch. It allows you to follow the
-`git-flow` methodology if you want to but also allows you the freedom to create
-release versions on different branches without merging into `main`.
+Short for "Branch Release" - this is a CLI that allows you to create releases 
+off any branch and either merge back into that branch or into a different 
+branch. It allows you to follow the `git-flow` methodology if you want to but 
+also allows you the freedom to create release versions on different branches 
+without merging into `main`.
 
 This project extends the [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version)
 project. So it uses their versioning and bumping logic, but builds a workflow
@@ -34,7 +35,7 @@ $ npm install -g brrelease
 $ brrelease COMMAND
 running command...
 $ brrelease (--version)
-brrelease/1.8.0 linux-x64 node-v23.5.0
+brrelease/1.8.1 linux-x64 node-v23.5.0
 $ brrelease --help [COMMAND]
 USAGE
   $ brrelease COMMAND
@@ -140,5 +141,5 @@ EXAMPLES
   $ brrelease release --package-file=package.json --bump-file=package-lock.json --bump-file=.versionrc
 ```
 
-_See code: [src/commands/release.ts](https://github.com/kerren/brrelease/blob/v1.8.0/src/commands/release.ts)_
+_See code: [src/commands/release.ts](https://github.com/kerren/brrelease/blob/v1.8.1/src/commands/release.ts)_
 <!-- commandsstop -->
