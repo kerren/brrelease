@@ -3,7 +3,8 @@
 import commitAndTagVersionApi from 'commit-and-tag-version';
 
 export interface CommitAndTagVersionResponse {
-    newVersion: string;
+    newVersion?: string;
+    changelogOutput?: string;
 }
 
 export interface CommitAndTagVersionArguments {

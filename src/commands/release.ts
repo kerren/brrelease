@@ -135,7 +135,10 @@ export default class Release extends Command {
                 prerelease: flags['prerelease'] ?? undefined,
             };
 
-            const { newVersion } = await commitAndTagVersion({ ...commitAndTagBody, dryRun: true });
+            const dryRun = await commitAndTagVersion({ ...commitAndTagBody, dryRun: true });
+            const newVersion = dryRun.newVersion!;
+            const changelogOutput = dryRun.changelogOutput!;
+
             const newVersionWithPrefix = `${tagPrefix}${newVersion}`;
             this.log(`The new release version will be ${chalk.green(newVersionWithPrefix)}`);
 
