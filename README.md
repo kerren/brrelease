@@ -1,12 +1,26 @@
 brrelease
 =================
 
-A CLI used to create releases on a repository but it runs on any branch and allows you to trigger file generateors, etc as part of the release.
-
-
 [![oclif](https://img.shields.io/badge/cli-oclif-brightgreen.svg)](https://oclif.io)
 [![Version](https://img.shields.io/npm/v/brrelease.svg)](https://npmjs.org/package/brrelease)
 [![Downloads/week](https://img.shields.io/npm/dw/brrelease.svg)](https://npmjs.org/package/brrelease)
+
+This is a CLI that allows you to create releases off any branch and either merge
+back into that branch or into a different branch. It allows you to follow the
+`git-flow` methodology if you want to but also allows you the freedom to create
+release versions on different branches without merging into `main`.
+
+This project extends the [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version)
+project. So it uses their versioning and bumping logic, but builds a workflow
+on top of it.
+
+The easiest way to use this would be via `npx` by running the following command:
+```shell
+npx brrelease release --help
+```
+
+Check out the documentation below to get an idea on how to use it.
+
 
 
 <!-- toc -->
@@ -20,7 +34,7 @@ $ npm install -g brrelease
 $ brrelease COMMAND
 running command...
 $ brrelease (--version)
-brrelease/1.3.0 linux-x64 node-v23.5.0
+brrelease/1.4.0 linux-x64 node-v23.5.0
 $ brrelease --help [COMMAND]
 USAGE
   $ brrelease COMMAND
@@ -110,7 +124,15 @@ DESCRIPTION
 
 EXAMPLES
   $ brrelease release
+
+  $ brrelease release --release-as=major
+
+  $ brrelease release --merge-into-branch=main
+
+  $ brrelease release --merge-into-branch=main --run-script-during-release="npm run update-readme"
+
+  $ brrelease release --prerelease=beta --skip-changelog
 ```
 
-_See code: [src/commands/release.ts](https://github.com/kerren/brrelease/blob/v1.3.0/src/commands/release.ts)_
+_See code: [src/commands/release.ts](https://github.com/kerren/brrelease/blob/v1.4.0/src/commands/release.ts)_
 <!-- commandsstop -->

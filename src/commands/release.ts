@@ -20,7 +20,13 @@ export default class Release extends Command {
 
     static override description = `Run a release on the branch that you're on`;
 
-    static override examples = ['<%= config.bin %> <%= command.id %>'];
+    static override examples = [
+        '<%= config.bin %> <%= command.id %>',
+        `<%= config.bin %> <%= command.id %> --release-as=major`,
+        `<%= config.bin %> <%= command.id %> --merge-into-branch=main`,
+        `<%= config.bin %> <%= command.id %> --merge-into-branch=main --run-script-during-release="npm run update-readme"`,
+        `<%= config.bin %> <%= command.id %> --prerelease=beta --skip-changelog`,
+    ];
 
     static override flags = {
         'tag-prefix': Flags.string({
