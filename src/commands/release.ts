@@ -14,6 +14,7 @@ import { gitCreateTag } from '../shared/git/git-create-tag.js';
 import { commitAndTagVersion } from '../shared/commit-and-tag-version.js';
 import { gitStageFile } from '../shared/git/git-stage-file.js';
 import { gitDiscardAllUnstagedChanges } from '../shared/git/git-discard-all-unstaged-changes.js';
+import { gitPushBranch } from '../shared/git/git-push-branch.js';
 
 export default class Release extends Command {
     static override args = {};
@@ -110,6 +111,11 @@ export default class Release extends Command {
             description: `Sign the git commits`,
             default: true,
             allowNo: true,
+        }),
+        'auto-push': Flags.boolean({
+            char: 'A',
+            description: `Automatically push the branches and tag once the release has been merged (this is more for convenience)`,
+            default: false,
         }),
     };
 
@@ -221,23 +227,33 @@ export default class Release extends Command {
             // 5. Merge branch
             const isDifferentMergeBranch = !!flags['merge-into-branch'];
             const mergeBranchName = flags['merge-into-branch'] ?? currentBranch;
+            const autoPush = flags['auto-push'];
             const mergeSpinner = ora(`Merging the release into branch ${mergeBranchName}`).start();
             if (isDifferentMergeBranch) {
                 // We need to merge this into a DIFFERENT branch to what we started from
                 await gitCheckoutBranch(gitBinaryPath, mergeBranchName);
                 await gitMergeBranch(gitBinaryPath, releaseBranchName, sign);
                 await gitCreateTag(gitBinaryPath, newVersionWithPrefix, changelogOutput);
+                if (autoPush) {
+                    await gitPushBranch(gitBinaryPath);
+                }
                 mergeSpinner.succeed(`Merging the release into branch ${mergeBranchName}`);
 
                 mergeSpinner.start(`Merging ${mergeBranchName} into ${currentBranch} to ensure changelog generates correctly`);
                 await gitCheckoutBranch(gitBinaryPath, currentBranch);
                 await gitMergeBranch(gitBinaryPath, mergeBranchName, sign);
+                if (autoPush) {
+                    await gitPushBranch(gitBinaryPath);
+                }
                 mergeSpinner.succeed(`Merging ${mergeBranchName} into ${currentBranch} to ensure changelog generates correctly`);
             } else {
                 // We are merging into the current branch
                 await gitCheckoutBranch(gitBinaryPath, currentBranch);
                 await gitMergeBranch(gitBinaryPath, releaseBranchName, sign);
                 await gitCreateTag(gitBinaryPath, newVersionWithPrefix, changelogOutput);
+                if (autoPush) {
+                    await gitPushBranch(gitBinaryPath);
+                }
                 mergeSpinner.succeed(`Merging the release into branch ${mergeBranchName}`);
             }
 
