@@ -45,19 +45,21 @@ export default class Release extends Command {
             description: 'The commit message that should be used to commit the changelog file',
             default: 'chore: generate the changelog',
         }),
+        'run-script-during-release': Flags.string({
+            char: 'r',
+            description: `One or many scripts that should be run during the release, it's recommended that you make these npm scripts and they don't contain the '"' character`,
+            multiple: true,
+        }),
     };
 
     public async run(): Promise<void> {
         const { args, flags } = await this.parse(Release);
 
-        const tagPrefix = flags['tag-prefix'];
-        const releaseBranchPrefix = flags['release-branch-prefix'];
-        const gitBinaryPath = flags['git-binary-path'];
-
-        const skipChangelog = flags['skip-changelog'];
-        const changelogFilePath = flags['changelog-file-path'];
-
         try {
+            const tagPrefix = flags['tag-prefix'];
+            const releaseBranchPrefix = flags['release-branch-prefix'];
+            const gitBinaryPath = flags['git-binary-path'];
+
             const newVersion: string = await commitAndTagVersion({ dryRun: true, silent: true });
             const newVersionWithPrefix = `${tagPrefix}${newVersion}`;
             this.log(`The new release version will be ${chalk.green(newVersionWithPrefix)}`);
@@ -70,8 +72,22 @@ export default class Release extends Command {
 
             // 2. Run the additional user scripts
             // TODO: Implement this
+            const additionalUserScripts = flags['run-script-during-release'] ?? [];
+            const additionalUserScriptsSpinner = ora(`Running additional user scripts`).start();
+            if (additionalUserScripts.length === 0) {
+                additionalUserScriptsSpinner.succeed('No additional user scripts specified');
+            } else {
+                for (const script of additionalUserScripts) {
+                    const scriptSpinner = ora(script).start();
+
+                    scriptSpinner.succeed();
+                }
+                additionalUserScriptsSpinner.succeed(`Running additional user scripts`);
+            }
 
             // 3. Create the changelog
+            const skipChangelog = flags['skip-changelog'];
+            const changelogFilePath = flags['changelog-file-path'];
             const changeLogSpinner = ora(`Creating the changelog ${changelogFilePath}`);
             if (skipChangelog) {
                 changeLogSpinner.warn('You have elected to skip changelog creation');
