@@ -34,7 +34,7 @@ $ npm install -g brrelease
 $ brrelease COMMAND
 running command...
 $ brrelease (--version)
-brrelease/1.4.0 linux-x64 node-v23.5.0
+brrelease/1.5.0 linux-x64 node-v23.5.0
 $ brrelease --help [COMMAND]
 USAGE
   $ brrelease COMMAND
@@ -131,8 +131,12 @@ EXAMPLES
 
   $ brrelease release --merge-into-branch=main --run-script-during-release="npm run update-readme"
 
+  $ brrelease release --merge-into-branch=main --run-script-during-release="npm run update-readme" --run-script-during-release="echo $(date) > .latest-build-time"
+
   $ brrelease release --prerelease=beta --skip-changelog
+
+  $ brrelease release --package-file=package.json --bump-file=package-lock.json --bump-file=.versionrc
 ```
 
-_See code: [src/commands/release.ts](https://github.com/kerren/brrelease/blob/v1.4.0/src/commands/release.ts)_
+_See code: [src/commands/release.ts](https://github.com/kerren/brrelease/blob/v1.5.0/src/commands/release.ts)_
 <!-- commandsstop -->
