@@ -13,7 +13,8 @@
     "@oclif/plugin-plugins": "^5",
     "chalk": "^5.4.1",
     "commit-and-tag-version": "12.5.0",
-    "ora": "^8.1.1"
+    "ora": "^8.1.1",
+    "patch-package": "^8.0.0"
   },
   "devDependencies": {
     "@oclif/prettier-config": "^0.2.1",
