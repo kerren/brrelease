@@ -220,7 +220,9 @@ export default class Release extends Command {
                 // We need to merge this into a DIFFERENT branch to what we started from
                 await gitCheckoutBranch(gitBinaryPath, mergeBranchName);
                 await gitMergeBranch(gitBinaryPath, releaseBranchName, sign);
+                console.log('TAGGING');
                 await gitCreateTag(gitBinaryPath, newVersionWithPrefix);
+                console.log('TAGGING DONE');
                 mergeSpinner.succeed(`Merging the release into branch ${mergeBranchName}`);
 
                 if (!flags['skip-merge-back-into-current-branch']) {
@@ -233,7 +235,9 @@ export default class Release extends Command {
                 // We are merging into the current branch
                 await gitCheckoutBranch(gitBinaryPath, currentBranch);
                 await gitMergeBranch(gitBinaryPath, releaseBranchName, sign);
+                console.log('TAGGING');
                 await gitCreateTag(gitBinaryPath, newVersionWithPrefix);
+                console.log('TAGGING DONE');
                 mergeSpinner.succeed(`Merging the release into branch ${mergeBranchName}`);
             }
 
