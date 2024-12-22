@@ -179,24 +179,30 @@ export default class Release extends Command {
             }
 
             // 4. Run the bump files?
-            const bumpSpinner = ora(`Bumping version number to ${newVersionWithPrefix}`);
             const packageFiles = flags['package-file'] ?? [];
             const bumpFiles = flags['bump-file'] ?? [];
-            await commitAndTagVersion({
-                silent: true,
-                skip: {
-                    tag: true,
-                    changelog: true,
-                    commit: true,
-                },
-                bumpFiles: [...bumpFiles, ...packageFiles],
-                packageFiles: packageFiles,
-                updaters: flags['updater'] ?? [],
-                sign,
-            });
-            await gitStageChanges(gitBinaryPath);
-            await gitCommitChanges(gitBinaryPath, flags['bump-files-commit-message'], sign);
-            bumpSpinner.succeed(`Bumping version number to ${newVersionWithPrefix}`);
+            const updaters = flags['updater'] ?? [];
+            const numFiles = packageFiles.length + bumpFiles.length + updaters.length;
+            const bumpSpinner = ora(`Bumping version number to ${newVersionWithPrefix}`);
+            if (numFiles > 0) {
+                await commitAndTagVersion({
+                    silent: true,
+                    skip: {
+                        tag: true,
+                        changelog: true,
+                        commit: true,
+                    },
+                    bumpFiles: [...bumpFiles, ...packageFiles],
+                    packageFiles: packageFiles,
+                    updaters: flags['updater'] ?? [],
+                    sign,
+                });
+                await gitStageChanges(gitBinaryPath);
+                await gitCommitChanges(gitBinaryPath, flags['bump-files-commit-message'], sign);
+                bumpSpinner.succeed(`Bumping version number to ${newVersionWithPrefix}`);
+            } else {
+                bumpSpinner.warn(`No files specified to bump to ${newVersionWithPrefix}`);
+            }
 
             // 5. Merge branch
             const isDifferentMergeBranch = !!flags['merge-into-branch'];
