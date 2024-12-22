@@ -152,7 +152,45 @@ export default class Release extends Command {
             await gitCreateBranch(gitBinaryPath, releaseBranchName);
             newReleaseBranchSpinner.succeed(`Creating a new release branch ${newVersionWithPrefix}`);
 
-            // 2. Run the additional user scripts
+            // 2. Create the changelog
+            const skipChangelog = flags['skip-changelog'];
+            const changeLogSpinner = ora(`Creating the changelog ${changelogFilePath}`);
+            if (skipChangelog) {
+                changeLogSpinner.warn('You have elected to skip changelog creation');
+            } else {
+                await commitAndTagVersion({
+                    ...commitAndTagBody,
+                    skip: {
+                        tag: true,
+                        commit: true,
+                    },
+                });
+                changeLogSpinner.succeed(`Creating the changelog ${changelogFilePath}`);
+                await gitStageFile(gitBinaryPath, changelogFilePath);
+                await gitCommitChanges(gitBinaryPath, flags['changelog-commit-message'], sign);
+                await gitDiscardAllUnstagedChanges(gitBinaryPath);
+            }
+
+            // 3. Run the bump files
+            const numFiles = packageFiles.length + bumpFiles.length + updaters.length;
+            const bumpSpinner = ora(`Bumping version number to ${newVersionWithPrefix}`);
+            if (numFiles > 0 && !firstRelease) {
+                await commitAndTagVersion({
+                    ...commitAndTagBody,
+                    skip: {
+                        tag: true,
+                        changelog: true,
+                        commit: true,
+                    },
+                });
+                await gitStageChanges(gitBinaryPath);
+                await gitCommitChanges(gitBinaryPath, flags['bump-files-commit-message'], sign);
+                bumpSpinner.succeed(`Bumping version number to ${newVersionWithPrefix}`);
+            } else {
+                bumpSpinner.warn(`No files specified to bump to ${newVersionWithPrefix}`);
+            }
+
+            // 4. Run the additional user scripts
             const additionalUserScripts = flags['run-script-during-release'] ?? [];
             const additionalUserScriptsSpinner = ora(`Running additional user scripts (${additionalUserScripts.length} scripts)`).start();
             if (additionalUserScripts.length === 0) {
@@ -175,44 +213,6 @@ export default class Release extends Command {
                         `Running additional user scripts (${additionalUserScripts.length} scripts) - no file changes found!`,
                     );
                 }
-            }
-
-            // 3. Create the changelog
-            const skipChangelog = flags['skip-changelog'];
-            const changeLogSpinner = ora(`Creating the changelog ${changelogFilePath}`);
-            if (skipChangelog) {
-                changeLogSpinner.warn('You have elected to skip changelog creation');
-            } else {
-                await commitAndTagVersion({
-                    ...commitAndTagBody,
-                    skip: {
-                        tag: true,
-                        commit: true,
-                    },
-                });
-                changeLogSpinner.succeed(`Creating the changelog ${changelogFilePath}`);
-                await gitStageFile(gitBinaryPath, changelogFilePath);
-                await gitCommitChanges(gitBinaryPath, flags['changelog-commit-message'], sign);
-                await gitDiscardAllUnstagedChanges(gitBinaryPath);
-            }
-
-            // 4. Run the bump files
-            const numFiles = packageFiles.length + bumpFiles.length + updaters.length;
-            const bumpSpinner = ora(`Bumping version number to ${newVersionWithPrefix}`);
-            if (numFiles > 0 && !firstRelease) {
-                await commitAndTagVersion({
-                    ...commitAndTagBody,
-                    skip: {
-                        tag: true,
-                        changelog: true,
-                        commit: true,
-                    },
-                });
-                await gitStageChanges(gitBinaryPath);
-                await gitCommitChanges(gitBinaryPath, flags['bump-files-commit-message'], sign);
-                bumpSpinner.succeed(`Bumping version number to ${newVersionWithPrefix}`);
-            } else {
-                bumpSpinner.warn(`No files specified to bump to ${newVersionWithPrefix}`);
             }
 
             // 5. Merge branch
