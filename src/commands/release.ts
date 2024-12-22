@@ -126,7 +126,6 @@ export default class Release extends Command {
             const changelogFilePath = flags['changelog-file-path'];
 
             const commitAndTagBody = {
-                silent: true,
                 infile: changelogFilePath,
                 bumpFiles: [...bumpFiles, ...packageFiles],
                 packageFiles,
