@@ -68,7 +68,10 @@ export default class Release extends Command {
             await gitCreateBranch(gitBinaryPath, releaseBranchName);
             newReleaseBranchSpinner.succeed(`Creating a new release branch ${newVersionWithPrefix}`);
 
-            // 2. Create the changelog
+            // 2. Run the additional user scripts
+            // TODO: Implement this
+
+            // 3. Create the changelog
             const changeLogSpinner = ora(`Creating the changelog ${changelogFilePath}`);
             if (skipChangelog) {
                 changeLogSpinner.warn('You have elected to skip changelog creation');
@@ -86,6 +89,15 @@ export default class Release extends Command {
                 await gitStageChanges(gitBinaryPath);
                 await gitCommitChanges(gitBinaryPath, flags['changelog-commit-message']);
             }
+
+            // 4. Run the bump files?
+            // TODO: implement this
+
+            // 5. Merge branch
+            // TODO: implement this
+
+            // 6. Merge base branch if necessary
+            // TODO: implement this
         } catch (error) {
             this.log('\n');
             this.error((error as any).stderr ?? (error as any).message ?? error);
