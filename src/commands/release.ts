@@ -7,6 +7,7 @@ import { gitCreateBranch } from '../shared/git/git-create-branch.js';
 import ora from 'ora';
 import { gitStageChanges } from '../shared/git/git-stage-changes.js';
 import { gitCommitChanges } from '../shared/git/git-commit-changes.js';
+import { spawnCommand } from '../shared/spawn-command.js';
 
 export default class Release extends Command {
     static override args = {};
@@ -71,7 +72,6 @@ export default class Release extends Command {
             newReleaseBranchSpinner.succeed(`Creating a new release branch ${newVersionWithPrefix}`);
 
             // 2. Run the additional user scripts
-            // TODO: Implement this
             const additionalUserScripts = flags['run-script-during-release'] ?? [];
             const additionalUserScriptsSpinner = ora(`Running additional user scripts`).start();
             if (additionalUserScripts.length === 0) {
@@ -79,7 +79,9 @@ export default class Release extends Command {
             } else {
                 for (const script of additionalUserScripts) {
                     const scriptSpinner = ora(script).start();
-
+                    const spawnResult = await spawnCommand('/bin/bash', ['-c', script]);
+                    this.log(spawnResult.stdout);
+                    this.log('\n');
                     scriptSpinner.succeed();
                 }
                 additionalUserScriptsSpinner.succeed(`Running additional user scripts`);
