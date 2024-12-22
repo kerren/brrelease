@@ -51,7 +51,9 @@
     "version",
     "commit-and-tag-version",
     "branch",
-    "merge"
+    "merge",
+    "git",
+    "cli"
   ],
   "license": "MIT",
   "main": "dist/index.js",
