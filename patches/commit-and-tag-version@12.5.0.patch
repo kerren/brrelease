@@ -1,0 +1,12 @@
+diff --git a/index.js b/index.js
+index ecb193458a40f7faf401426a634eb9873241601f..c0bd2d6ea939d6cfc04e7d59c3f00ed268a5d3ee 100755
+--- a/index.js
++++ b/index.js
+@@ -87,6 +87,7 @@ module.exports = async function standardVersion(argv) {
+     await changelog(args, newVersion);
+     await commit(args, newVersion);
+     await tag(newVersion, pkg ? pkg.private : false, args);
++    return newVersion;
+   } catch (err) {
+     printError(args, err.message);
+     throw err;
