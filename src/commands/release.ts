@@ -97,10 +97,10 @@ export default class Release extends Command {
                 additionalUserScriptsSpinner.succeed('No additional user scripts specified');
             } else {
                 for (const script of additionalUserScripts) {
-                    const scriptSpinner = ora(script).start();
+                    const scriptSpinner = additionalUserScriptsSpinner.start(script);
                     const spawnResult = await spawnCommand('/bin/bash', ['-c', script]);
                     this.log(spawnResult.stdout);
-                    scriptSpinner.succeed();
+                    scriptSpinner.succeed(script);
                 }
 
                 const checkForChanges = await gitCheckForChanges(gitBinaryPath);
@@ -140,7 +140,12 @@ export default class Release extends Command {
             // TODO: implement this
 
             // 5. Merge branch
-            // TODO: implement this
+            const mergeBranchName = flags['merge-into-branch'];
+            if (mergeBranchName) {
+                // We need to merge this into a DIFFERENT branch to what we started from
+            } else {
+                // We are merging into the current branch
+            }
 
             // 6. Merge base branch if necessary
             // TODO: implement this
