@@ -111,6 +111,11 @@ export default class Release extends Command {
             default: true,
             allowNo: true,
         }),
+        'auto-push': Flags.boolean({
+            char: 'A',
+            description: `Automatically push the branches and tag once the release has been merged (this is more for convenience)`,
+            default: false,
+        }),
     };
 
     public async run(): Promise<void> {
