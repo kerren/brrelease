@@ -243,6 +243,11 @@ export default class Release extends Command {
             mergeSpinner.succeed(`Delete release branch ${releaseBranchName}`);
         } catch (error) {
             this.log('\n');
+            const stringErrorMessage = (error as any).stderr ?? (error as any).message;
+            if (!stringErrorMessage) {
+                console.error('An error has occurred with an unknown structure...');
+                console.error(error);
+            }
             this.error((error as any).stderr ?? (error as any).message ?? error);
         }
     }
