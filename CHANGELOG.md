@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [1.1.0](https://github.com/kerren/brrelease/compare/v1.0.0...v1.1.0) (2024-12-22)
+
+
+### Features
+
+* **changelog:** Add the ability to extract the changelog text ([e31d658](https://github.com/kerren/brrelease/commit/e31d658d0c3a6651485e8f9af04402c76c59b11f)), closes [#9](https://github.com/kerren/brrelease/issues/9)
+* **changelog:** Discard unstaged files after changelog generation ([30d7974](https://github.com/kerren/brrelease/commit/30d7974c433fd93f259197ad54862aba800d450a))
+* **debugging:** Log errors of different structures ([fc2cb44](https://github.com/kerren/brrelease/commit/fc2cb44bb8d28808b1d1f37f8407d84cd247f172))
+* **tags:** Add the changelog to the annotation message on a tag ([53762ee](https://github.com/kerren/brrelease/commit/53762ee2c8df5f4b8a8ecc4c0244936588bc4522)), closes [#10](https://github.com/kerren/brrelease/issues/10)
+
+
+### Bug Fixes
+
+* **changelog:** Do not skip the bump version in changelog generation ([25b4182](https://github.com/kerren/brrelease/commit/25b4182424aacaf49c16d27e7ee78e3fbd4f788a))
+* **changelog:** Don't skip the bump but only stage the changelog file ([9e0809e](https://github.com/kerren/brrelease/commit/9e0809e1c10c551939f5a2b17f9eacfc57878f30))
+
 ## 0.0.0 (2024-12-22)
 
 
