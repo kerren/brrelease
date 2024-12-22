@@ -1,4 +1,4 @@
-import { Args, Command, Flags } from '@oclif/core';
+import { Command, Flags } from '@oclif/core';
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-expect-error
 import commitAndTagVersion from 'commit-and-tag-version';
@@ -10,7 +10,6 @@ import { gitCommitChanges } from '../shared/git/git-commit-changes.js';
 import { spawnCommand } from '../shared/spawn-command.js';
 import { gitCheckForChanges } from '../shared/git/git-check-for-changes.js';
 import { gitGetCurrentBranch } from '../shared/git/git-get-current-branch.js';
-import Flag = Command.Flag;
 import { gitCheckoutBranch } from '../shared/git/git-checkout-branch.js';
 import { gitMergeBranch } from '../shared/git/git-merge-branch.js';
 import { gitDeleteBranch } from '../shared/git/git-delete-branch.js';
@@ -111,7 +110,7 @@ export default class Release extends Command {
     };
 
     public async run(): Promise<void> {
-        const { args, flags } = await this.parse(Release);
+        const { flags } = await this.parse(Release);
 
         try {
             const tagPrefix = flags['tag-prefix'];
