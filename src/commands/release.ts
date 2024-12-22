@@ -179,9 +179,9 @@ export default class Release extends Command {
             }
 
             // 4. Run the bump files?
-            const packageFiles = flags['package-file'] ?? [];
-            const bumpFiles = flags['bump-file'] ?? [];
-            const updaters = flags['updater'] ?? [];
+            const packageFiles = (flags['package-file'] ?? []).filter((f) => f !== '');
+            const bumpFiles = (flags['bump-file'] ?? []).filter((f) => f !== '');
+            const updaters = (flags['updater'] ?? []).filter((f) => f !== '');
             const numFiles = packageFiles.length + bumpFiles.length + updaters.length;
             const bumpSpinner = ora(`Bumping version number to ${newVersionWithPrefix}`);
             if (numFiles > 0) {
