@@ -43,8 +43,9 @@ export default class Release extends Command {
             const newVersionWithPrefix = `${tagPrefix}${newVersion}`;
             this.log(`The new release version will be ${chalk.green(newVersionWithPrefix)}`);
 
+            // 1. Create the new release branch
             const releaseBranchName = `${releaseBranchPrefix}${newVersionWithPrefix}`;
-            const newReleaseBranchSpinner = ora(`Creating a new release branch ${releaseBranchName}`).start();
+            const newReleaseBranchSpinner = ora(`Creating a new release branch ${chalk.bgBlue(releaseBranchName)}`).start();
             await gitCreateBranch(gitBinaryPath, releaseBranchName);
             newReleaseBranchSpinner.succeed(`Creating a new release branch ${newVersionWithPrefix}`);
         } catch (error) {
