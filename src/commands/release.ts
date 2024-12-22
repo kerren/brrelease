@@ -25,7 +25,9 @@ export default class Release extends Command {
         `<%= config.bin %> <%= command.id %> --release-as=major`,
         `<%= config.bin %> <%= command.id %> --merge-into-branch=main`,
         `<%= config.bin %> <%= command.id %> --merge-into-branch=main --run-script-during-release="npm run update-readme"`,
+        `<%= config.bin %> <%= command.id %> --merge-into-branch=main --run-script-during-release="npm run update-readme" --run-script-during-release="echo $(date) > .latest-build-time"`,
         `<%= config.bin %> <%= command.id %> --prerelease=beta --skip-changelog`,
+        `<%= config.bin %> <%= command.id %> --package-file=package.json --bump-file=package-lock.json --bump-file=.versionrc`,
     ];
 
     static override flags = {
