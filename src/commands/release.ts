@@ -68,6 +68,10 @@ export default class Release extends Command {
             description: `If you are merging into a different branch, you can elect to skip merging it back into the current branch you're on`,
             dependsOn: ['merge-into-branch'],
         }),
+        'bump-files-commit-message': Flags.string({
+            description: 'The commit message to use when bumping the version in files',
+            default: 'chore: bump the version in project files',
+        }),
     };
 
     public async run(): Promise<void> {
@@ -137,7 +141,19 @@ export default class Release extends Command {
             }
 
             // 4. Run the bump files?
-            // TODO: implement this
+            const bumpSpinner = ora(`Bumping version number to ${newVersionWithPrefix}`);
+            await commitAndTagVersion({
+                silent: true,
+                skip: {
+                    tag: true,
+                    changelog: true,
+                    commit: true,
+                },
+                infile: changelogFilePath,
+            });
+            changeLogSpinner.succeed(`Bumping version number to ${newVersionWithPrefix}`);
+            await gitStageChanges(gitBinaryPath);
+            await gitCommitChanges(gitBinaryPath, flags['bump-files-commit-message']);
 
             // 5. Merge branch
             const mergeBranchName = flags['merge-into-branch'];
