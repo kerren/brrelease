@@ -7,7 +7,7 @@ export interface SpawnResult {
 }
 
 export async function spawnCommand(binary: string, args: string[]) {
-    return new Promise((resolve, reject) => {
+    return new Promise<SpawnResult>((resolve, reject) => {
         let stdout = '';
         let stderr = '';
 
