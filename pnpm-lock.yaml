@@ -6,7 +6,7 @@ settings:
 
 patchedDependencies:
   commit-and-tag-version@12.5.0:
-    hash: qtq5krjtcbmhx7uzqscl6vvtea
+    hash: nq6rhreaoxwm3trpoo3ulymfcq
     path: patches/commit-and-tag-version@12.5.0.patch
 
 importers:
@@ -27,7 +27,7 @@ importers:
         version: 5.4.1
       commit-and-tag-version:
         specifier: 12.5.0
-        version: 12.5.0(patch_hash=qtq5krjtcbmhx7uzqscl6vvtea)
+        version: 12.5.0(patch_hash=nq6rhreaoxwm3trpoo3ulymfcq)
       ora:
         specifier: ^8.1.1
         version: 8.1.1
@@ -4942,7 +4942,7 @@ snapshots:
     dependencies:
       delayed-stream: 1.0.0
 
-  commit-and-tag-version@12.5.0(patch_hash=qtq5krjtcbmhx7uzqscl6vvtea):
+  commit-and-tag-version@12.5.0(patch_hash=nq6rhreaoxwm3trpoo3ulymfcq):
     dependencies:
       chalk: 2.4.2
       conventional-changelog: 4.0.0
