@@ -73,7 +73,7 @@ Run a release on the branch that you're on
 ```
 USAGE
   $ brrelease release [-P <value>] [-G <value>] [-R <value>] [-c <value>] [-C] [--changelog-commit-message
-    <value>] [-r <value>...] [-m <value>] [-s -b <value>] [--bump-files-commit-message <value>] [-p <value>...] [-B
+    <value>] [-r <value>...] [-m <value>] [-b <value>] [--bump-files-commit-message <value>] [-p <value>...] [-B
     <value>...] [-u <value>...] [--release-as major|minor|patch] [--first-release] [--prerelease <value>] [-s]
 
 FLAGS
@@ -102,8 +102,6 @@ FLAGS
                                                           it's recommended that you make these npm scripts and they
                                                           don't contain the '"' character
   -s, --[no-]sign                                         Sign the git commits
-  -s, --skip-merge-back-into-current-branch               If you are merging into a different branch, you can elect to
-                                                          skip merging it back into the current branch you're on
   -u, --updater=<value>...                                The updater files/scripts that should run during execution
                                                           (see
                                                           https://github.com/absolute-version/commit-and-tag-version)
