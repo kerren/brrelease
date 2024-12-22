@@ -154,9 +154,9 @@ export default class Release extends Command {
                 },
                 infile: changelogFilePath,
             });
-            changeLogSpinner.succeed(`Bumping version number to ${newVersionWithPrefix}`);
             await gitStageChanges(gitBinaryPath);
             await gitCommitChanges(gitBinaryPath, flags['bump-files-commit-message']);
+            bumpSpinner.succeed(`Bumping version number to ${newVersionWithPrefix}`);
 
             // 5. Merge branch
             const isDifferentMergeBranch = !!flags['merge-into-branch'];
@@ -181,9 +181,9 @@ export default class Release extends Command {
                 mergeSpinner.succeed(`Merging the release into branch ${mergeBranchName}`);
             }
 
-            mergeSpinner.start(`Delete release branch ${releaseBranchName}`);
-            await gitDeleteBranch(gitBinaryPath, releaseBranchName);
-            mergeSpinner.succeed(`Delete release branch ${releaseBranchName}`);
+            // mergeSpinner.start(`Delete release branch ${releaseBranchName}`);
+            // await gitDeleteBranch(gitBinaryPath, releaseBranchName);
+            // mergeSpinner.succeed(`Delete release branch ${releaseBranchName}`);
 
             // 6. Merge base branch if necessary
             // TODO: implement this
