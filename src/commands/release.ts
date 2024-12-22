@@ -74,11 +74,6 @@ export default class Release extends Command {
             char: 'b',
             description: `If you would like the release to merge into a different branch, specify it here. The default is the current branch you're on`,
         }),
-        'skip-merge-back-into-current-branch': Flags.boolean({
-            char: 's',
-            description: `If you are merging into a different branch, you can elect to skip merging it back into the current branch you're on`,
-            dependsOn: ['merge-into-branch'],
-        }),
         'bump-files-commit-message': Flags.string({
             description: 'The commit message to use when bumping the version in files',
             default: 'chore: bump the version in project files',
@@ -234,12 +229,10 @@ export default class Release extends Command {
                 await gitCreateTag(gitBinaryPath, newVersionWithPrefix, changelogOutput);
                 mergeSpinner.succeed(`Merging the release into branch ${mergeBranchName}`);
 
-                if (!flags['skip-merge-back-into-current-branch']) {
-                    mergeSpinner.start(`Merging the release into branch ${currentBranch}`);
-                    await gitCheckoutBranch(gitBinaryPath, currentBranch);
-                    await gitMergeBranch(gitBinaryPath, releaseBranchName, sign);
-                    mergeSpinner.succeed(`Merging the release into branch ${currentBranch}`);
-                }
+                mergeSpinner.start(`Merging ${mergeBranchName} into ${currentBranch} to ensure changelog generates correctly`);
+                await gitCheckoutBranch(gitBinaryPath, currentBranch);
+                await gitMergeBranch(gitBinaryPath, mergeBranchName, sign);
+                mergeSpinner.succeed(`Merging ${mergeBranchName} into ${currentBranch} to ensure changelog generates correctly`);
             } else {
                 // We are merging into the current branch
                 await gitCheckoutBranch(gitBinaryPath, currentBranch);
