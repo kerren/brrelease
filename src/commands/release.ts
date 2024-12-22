@@ -73,7 +73,7 @@ export default class Release extends Command {
 
             // 2. Run the additional user scripts
             const additionalUserScripts = flags['run-script-during-release'] ?? [];
-            const additionalUserScriptsSpinner = ora(`Running additional user scripts`).start();
+            const additionalUserScriptsSpinner = ora(`Running additional user scripts (${additionalUserScripts.length} scripts)`).start();
             if (additionalUserScripts.length === 0) {
                 additionalUserScriptsSpinner.succeed('No additional user scripts specified');
             } else {
@@ -81,10 +81,9 @@ export default class Release extends Command {
                     const scriptSpinner = ora(script).start();
                     const spawnResult = await spawnCommand('/bin/bash', ['-c', script]);
                     this.log(spawnResult.stdout);
-                    this.log('\n');
                     scriptSpinner.succeed();
                 }
-                additionalUserScriptsSpinner.succeed(`Running additional user scripts`);
+                additionalUserScriptsSpinner.succeed(`Running additional user scripts (${additionalUserScripts.length} scripts)`);
             }
 
             // 3. Create the changelog
