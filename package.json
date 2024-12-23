@@ -89,7 +89,7 @@
     "generate:windows": "npx oclif pack win",
     "generate:macos": "npx oclif pack macos",
     "generate:debian": "npx oclif pack deb",
-    "generate": "pnpm build && pnpm prepack && pnpm generate:tarballs && pnpm generate:windows && pnpm generate:macos && pnpm generate:debian"
+    "generate": "pnpm build && pnpm prepack && pnpm generate:tarballs && pnpm generate:debian"
   },
   "types": "dist/index.d.ts",
   "pnpm": {
