@@ -1,7 +1,7 @@
 {
   "name": "brrelease",
   "description": "A CLI used to create releases on a repository but it runs on any branch and allows you to trigger file generateors, etc as part of the release.",
-  "version": "1.10.2",
+  "version": "1.11.0",
   "author": "Kerren Ortlepp",
   "bin": {
     "brrelease": "./bin/run.js"
@@ -84,12 +84,12 @@
     "test:run:1": "echo $(date) > test_1.out",
     "test:run:2": "echo \"the date is $(date)\" > test_2.out",
     "test:run:no_file": "echo \"Hello world - no file changes here...\"",
-    "release:script": "pnpm build && pnpm prepack && git commit -am 'chore: update the README' || true"
+    "release:script": "pnpm build && pnpm prepack && git commit -am 'chore: update the README' || true",
+    "generate:tarballs": "npx oclif pack tarballs --targets=linux-x64,linux-arm,linux-arm64,win32-x64,win32-arm64,darwin-x64,darwin-arm64 --parallel",
+    "generate:windows": "npx oclif pack win",
+    "generate:macos": "npx oclif pack macos",
+    "generate:debian": "npx oclif pack deb",
+    "generate": "pnpm build && pnpm prepack && pnpm generate:tarballs && pnpm generate:debian"
   },
-  "types": "dist/index.d.ts",
-  "pnpm": {
-    "patchedDependencies": {
-      "commit-and-tag-version@12.5.0": "patches/commit-and-tag-version@12.5.0.patch"
-    }
-  }
+  "types": "dist/index.d.ts"
 }
