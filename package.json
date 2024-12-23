@@ -91,10 +91,5 @@
     "generate:debian": "npx oclif pack deb",
     "generate": "pnpm build && pnpm prepack && pnpm generate:tarballs && pnpm generate:debian"
   },
-  "types": "dist/index.d.ts",
-  "pnpm": {
-    "patchedDependencies": {
-      "commit-and-tag-version@12.5.0": "patches/commit-and-tag-version@12.5.0.patch"
-    }
-  }
+  "types": "dist/index.d.ts"
 }
