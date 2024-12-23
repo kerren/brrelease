@@ -20,7 +20,8 @@ Homebrew (which is much easier):
 brew install kerren/brrelease-tap/brrelease
 ```
 
-Check out the documentation below to get an idea on how to use it.
+Check out the [release command](#brrelease-release) below for more information 
+on how to use it!
 
 
 <!-- toc -->
