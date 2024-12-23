@@ -1,6 +1,3 @@
-brrelease
-=================
-
 ![bRRelease](./readme/brrelease.svg)
 
 Short for "Branch Release" - this is a CLI that allows you to create releases 
