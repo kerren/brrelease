@@ -1,7 +1,4 @@
-brrelease
-=================
-
-[![oclif](https://img.shields.io/badge/cli-oclif-brightgreen.svg)](https://oclif.io)
+![bRRelease](./readme/brrelease.svg)
 
 Short for "Branch Release" - this is a CLI that allows you to create releases 
 off any branch and either merge back into that branch or into a different 
@@ -36,7 +33,7 @@ $ npm install -g brrelease
 $ brrelease COMMAND
 running command...
 $ brrelease (--version)
-brrelease/1.11.0 linux-x64 node-v23.5.0
+brrelease/1.12.0 linux-x64 node-v23.5.0
 $ brrelease --help [COMMAND]
 USAGE
   $ brrelease COMMAND
@@ -174,7 +171,7 @@ EXAMPLES
   $ brrelease release --package-file=package.json --bump-file=package-lock.json --bump-file=.versionrc
 ```
 
-_See code: [src/commands/release.ts](https://github.com/kerren/brrelease/blob/v1.11.0/src/commands/release.ts)_
+_See code: [src/commands/release.ts](https://github.com/kerren/brrelease/blob/v1.12.0/src/commands/release.ts)_
 <!-- commandsstop -->
 
 

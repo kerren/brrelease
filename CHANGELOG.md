@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [1.12.0](https://github.com/kerren/brrelease/compare/v1.11.0...v1.12.0) (2024-12-23)
+
+
+### Features
+
+* **docs:** Add a new logo ([ad249a9](https://github.com/kerren/brrelease/commit/ad249a9b8cabe8ee1d33a2b46fd71263ffcc44e8))
+
+
+### Bug Fixes
+
+* **devops:** Rebuild when building the deb files to ensure the tarballs aren't all built into it ([90aadf3](https://github.com/kerren/brrelease/commit/90aadf3b9dad7a9700a1a84d5c45ab2bd43f8e38))
+
 ## [1.11.0](https://github.com/kerren/brrelease/compare/v1.10.2...v1.11.0) (2024-12-23)
 
 
