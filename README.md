@@ -2,8 +2,6 @@ brrelease
 =================
 
 [![oclif](https://img.shields.io/badge/cli-oclif-brightgreen.svg)](https://oclif.io)
-[![Version](https://img.shields.io/npm/v/brrelease.svg)](https://npmjs.org/package/brrelease)
-[![Downloads/week](https://img.shields.io/npm/dw/brrelease.svg)](https://npmjs.org/package/brrelease)
 
 Short for "Branch Release" - this is a CLI that allows you to create releases 
 off any branch and either merge back into that branch or into a different 
@@ -15,18 +13,25 @@ This project extends the [commit-and-tag-version](https://github.com/absolute-ve
 project. So it uses their versioning and bumping logic, but builds a workflow
 on top of it.
 
-The easiest way to use this would be via `npx` by running the following command:
+For now, the only way to run this is to `git clone` the project and run the
+following commands:
 ```shell
-npx brrelease release --help
+git clone https://github.com/kerren/brrelease.git
+cd brrelease
+npm install
+npm run build && npm link
 ```
 
-Check out the documentation below to get an idea on how to use it.
+I've explained this in the FAQ section below. In the next few days I will have
+builds using Homebrew and other options which should make it a lot easier!
 
+Check out the documentation below to get an idea on how to use it.
 
 
 <!-- toc -->
 * [Usage](#usage)
 * [Commands](#commands)
+* [FAQ](#faq)
 <!-- tocstop -->
 # Usage
 <!-- usage -->
@@ -35,7 +40,7 @@ $ npm install -g brrelease
 $ brrelease COMMAND
 running command...
 $ brrelease (--version)
-brrelease/1.8.2 linux-x64 node-v23.5.0
+brrelease/1.8.3 linux-x64 node-v23.5.0
 $ brrelease --help [COMMAND]
 USAGE
   $ brrelease COMMAND
@@ -141,5 +146,16 @@ EXAMPLES
   $ brrelease release --package-file=package.json --bump-file=package-lock.json --bump-file=.versionrc
 ```
 
-_See code: [src/commands/release.ts](https://github.com/kerren/brrelease/blob/v1.8.2/src/commands/release.ts)_
+_See code: [src/commands/release.ts](https://github.com/kerren/brrelease/blob/v1.8.3/src/commands/release.ts)_
 <!-- commandsstop -->
+
+
+# FAQ
+
+## Why no npmjs.com entry?
+
+In order to get the other libraries to work the way I wanted, I needed to use 
+patches on the `node_modules` libraries installed. I thought that the 
+`postinstall` script would run on my library when you `npm install` it, but it
+looks like it skips that lifecycle hook. So I've had to create full builds for
+this and rather provide other ways of installing!
