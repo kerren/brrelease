@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [1.11.0](https://github.com/kerren/brrelease/compare/v1.10.2...v1.11.0) (2024-12-23)
+
+
+### Features
+
+* **devops:** Add a builder for Debian files (Windows & Mac included but disabled for now) ([c6dc4f0](https://github.com/kerren/brrelease/commit/c6dc4f0cc08983a9b1da0fcffe60e1ce473b911f)), closes [#15](https://github.com/kerren/brrelease/issues/15)
+* **devops:** Add the tarball generation script ([fd11b4a](https://github.com/kerren/brrelease/commit/fd11b4ad978f18eb05839223ab2bce5ded212951))
+
 ## [1.10.2](https://github.com/kerren/brrelease/compare/v1.10.1...v1.10.2) (2024-12-23)
 
 ## [1.10.1](https://github.com/kerren/brrelease/compare/v1.10.0...v1.10.1) (2024-12-23)
