@@ -9,6 +9,7 @@
   "bugs": "https://github.com/kerren/brrelease/issues",
   "dependencies": {
     "@oclif/core": "^4",
+    "@oclif/plugin-autocomplete": "^3.2.15",
     "@oclif/plugin-help": "^6",
     "@oclif/plugin-plugins": "^5",
     "chalk": "^5.4.1",
@@ -63,7 +64,8 @@
     "dirname": "brrelease",
     "commands": "./dist/commands",
     "plugins": [
-      "@oclif/plugin-help"
+      "@oclif/plugin-help",
+      "@oclif/plugin-autocomplete"
     ],
     "topicSeparator": ":",
     "topics": {}
