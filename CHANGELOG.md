@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [1.10.0](https://github.com/kerren/brrelease/compare/v1.9.0...v1.10.0) (2024-12-23)
+
+
+### Features
+
+* **build:** Ensure that the patch-package runs on the dist build ([e6a908e](https://github.com/kerren/brrelease/commit/e6a908ed2a7d8027d12bd4b3a859c1c54adfeec1)), closes [#14](https://github.com/kerren/brrelease/issues/14)
+
 ## [1.9.0](https://github.com/kerren/brrelease/compare/v1.8.3...v1.9.0) (2024-12-23)
 
 
