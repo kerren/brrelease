@@ -40,7 +40,7 @@ $ npm install -g brrelease
 $ brrelease COMMAND
 running command...
 $ brrelease (--version)
-brrelease/1.8.3 linux-x64 node-v23.5.0
+brrelease/1.9.0 linux-x64 node-v23.5.0
 $ brrelease --help [COMMAND]
 USAGE
   $ brrelease COMMAND
@@ -49,8 +49,40 @@ USAGE
 <!-- usagestop -->
 # Commands
 <!-- commands -->
+* [`brrelease autocomplete [SHELL]`](#brrelease-autocomplete-shell)
 * [`brrelease help [COMMAND]`](#brrelease-help-command)
 * [`brrelease release`](#brrelease-release)
+
+## `brrelease autocomplete [SHELL]`
+
+Display autocomplete installation instructions.
+
+```
+USAGE
+  $ brrelease autocomplete [SHELL] [-r]
+
+ARGUMENTS
+  SHELL  (zsh|bash|powershell) Shell type
+
+FLAGS
+  -r, --refresh-cache  Refresh cache (ignores displaying instructions)
+
+DESCRIPTION
+  Display autocomplete installation instructions.
+
+EXAMPLES
+  $ brrelease autocomplete
+
+  $ brrelease autocomplete bash
+
+  $ brrelease autocomplete zsh
+
+  $ brrelease autocomplete powershell
+
+  $ brrelease autocomplete --refresh-cache
+```
+
+_See code: [@oclif/plugin-autocomplete](https://github.com/oclif/plugin-autocomplete/blob/v3.2.15/src/commands/autocomplete/index.ts)_
 
 ## `brrelease help [COMMAND]`
 
@@ -146,7 +178,7 @@ EXAMPLES
   $ brrelease release --package-file=package.json --bump-file=package-lock.json --bump-file=.versionrc
 ```
 
-_See code: [src/commands/release.ts](https://github.com/kerren/brrelease/blob/v1.8.3/src/commands/release.ts)_
+_See code: [src/commands/release.ts](https://github.com/kerren/brrelease/blob/v1.9.0/src/commands/release.ts)_
 <!-- commandsstop -->
 
 
