@@ -13,17 +13,12 @@ This project extends the [commit-and-tag-version](https://github.com/absolute-ve
 project. So it uses their versioning and bumping logic, but builds a workflow
 on top of it.
 
-For now, the only way to run this is to `git clone` the project and run the
-following commands:
+To install this package, you can pull the `tar` files from the 
+[releases](https://github.com/kerren/brrelease/releases) page, or you can use
+Homebrew (which is much easier):
 ```shell
-git clone https://github.com/kerren/brrelease.git
-cd brrelease
-npm install
-npm run build && npm link
+brew install kerren/brrelease-tap/brrelease
 ```
-
-I've explained this in the FAQ section below. In the next few days I will have
-builds using Homebrew and other options which should make it a lot easier!
 
 Check out the documentation below to get an idea on how to use it.
 
