@@ -1,7 +1,7 @@
 brrelease
 =================
 
-[![oclif](https://img.shields.io/badge/cli-oclif-brightgreen.svg)](https://oclif.io)
+![bRRelease](./readme/brrelease.svg)
 
 Short for "Branch Release" - this is a CLI that allows you to create releases 
 off any branch and either merge back into that branch or into a different 
