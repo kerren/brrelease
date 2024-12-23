@@ -78,7 +78,7 @@
     "posttest": "pnpm run lint",
     "prepack": "oclif manifest && oclif readme",
     "preinstall": "scripts/preinstall.sh",
-    "postinstall": "patch-package",
+    "postinstall": "patch-package --patch-dir dist/patches",
     "test": "mocha --forbid-only \"test/**/*.test.ts\"",
     "version": "oclif readme && git add README.md",
     "test:run:1": "echo $(date) > test_1.out",
