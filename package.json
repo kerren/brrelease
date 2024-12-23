@@ -1,7 +1,7 @@
 {
   "name": "brrelease",
   "description": "A CLI used to create releases on a repository but it runs on any branch and allows you to trigger file generateors, etc as part of the release.",
-  "version": "1.9.0",
+  "version": "1.10.0",
   "author": "Kerren Ortlepp",
   "bin": {
     "brrelease": "./bin/run.js"
@@ -72,12 +72,13 @@
   },
   "repository": "kerren/brrelease",
   "scripts": {
-    "build": "shx rm -rf dist && tsc -b",
+    "build": "shx rm -rf dist && tsc -b && cp -a patches dist/ && cp -a scripts dist/",
     "lint": "eslint . --ext .ts",
     "postpack": "shx rm -f oclif.manifest.json",
     "posttest": "pnpm run lint",
     "prepack": "oclif manifest && oclif readme",
-    "postinstall": "patch-package",
+    "preinstall": "scripts/preinstall.sh || dist/scripts/preinstall.sh",
+    "postinstall": "patch-package --patch-dir dist/patches",
     "test": "mocha --forbid-only \"test/**/*.test.ts\"",
     "version": "oclif readme && git add README.md",
     "test:run:1": "echo $(date) > test_1.out",
