@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [1.13.0](https://github.com/kerren/brrelease/compare/v1.12.0...v1.13.0) (2024-12-24)
+
+
+### Features
+
+* **devops:** Add the release script to the package.json ([cfca18f](https://github.com/kerren/brrelease/commit/cfca18fb3bb30c7f7103c9b383257c036715a399))
+
+
+### Bug Fixes
+
+* **bump-files:** Allow the unstaging of bump fails to "fail" during changelog generation because there may not always be a file ([f0d1bd3](https://github.com/kerren/brrelease/commit/f0d1bd37c2ba87a93b729a479b775acf069f8128))
+
 ## [1.12.0](https://github.com/kerren/brrelease/compare/v1.11.0...v1.12.0) (2024-12-23)
 
 
