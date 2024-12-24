@@ -1,7 +1,7 @@
 {
   "name": "brrelease",
   "description": "A CLI used to create releases on a repository but it runs on any branch and allows you to trigger file generateors, etc as part of the release.",
-  "version": "1.12.0",
+  "version": "1.13.0",
   "author": "Kerren Ortlepp",
   "bin": {
     "brrelease": "./bin/run.js"
@@ -89,7 +89,8 @@
     "generate:windows": "pnpm build && pnpm prepack && npx oclif pack win",
     "generate:macos": "pnpm build && pnpm prepack && npx oclif pack macos",
     "generate:debian": "pnpm build && pnpm prepack && npx oclif pack deb",
-    "generate:main": "pnpm build && pnpm prepack && pnpm generate:tarballs && echo 'Complete! Once you have copied these tarballs, you can create the other packages'"
+    "generate:main": "pnpm build && pnpm prepack && pnpm generate:tarballs && echo 'Complete! Once you have copied these tarballs, you can create the other packages'",
+    "release:main": "pnpm build && ./bin/run.js release --merge-into-branch=main --run-script-during-release=\"pnpm run release:script\" --auto-push"
   },
   "types": "dist/index.d.ts"
 }

@@ -177,7 +177,13 @@ export default class Release extends Command {
                 changeLogSpinner.succeed(`Creating the changelog ${changelogFilePath}`);
                 await gitStageFile(gitBinaryPath, changelogFilePath);
                 await gitCommitChanges(gitBinaryPath, flags['changelog-commit-message'], sign);
-                await gitDiscardAllUnstagedChanges(gitBinaryPath);
+                changeLogSpinner.start(`Clearing additional files`);
+                try {
+                    await gitDiscardAllUnstagedChanges(gitBinaryPath);
+                    changeLogSpinner.succeed(`Clearing additional files`);
+                } catch (error) {
+                    changeLogSpinner.info(`No additional branch files generated`);
+                }
             }
 
             // 3. Run the bump files
