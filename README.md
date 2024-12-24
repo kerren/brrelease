@@ -20,6 +20,12 @@ brew install kerren/brrelease-tap/brrelease
 Here's a video on how to use the CLI for different workflows,
 [![brrelease youtube video](https://img.youtube.com/vi/UoJ43CeyeoI/0.jpg)](https://www.youtube.com/watch?v=UoJ43CeyeoI)
 
+You can do single branch workflows or multibranch workflows. For a single branch
+your git commit graph would look something like this:
+![Single Branch Workflow](./readme/single_branch.svg)
+
+For a multi-branch workflow, your git graph would look something like this:
+![Multi Branch Workflow](./readme/multi_branch.svg)
 
 Check out the [release command](#brrelease-release) below for more information 
 on how to use it!
@@ -37,7 +43,7 @@ $ npm install -g brrelease
 $ brrelease COMMAND
 running command...
 $ brrelease (--version)
-brrelease/1.14.1 linux-x64 node-v23.5.0
+brrelease/1.14.2 linux-x64 node-v23.5.0
 $ brrelease --help [COMMAND]
 USAGE
   $ brrelease COMMAND
@@ -175,7 +181,7 @@ EXAMPLES
   $ brrelease release --package-file=package.json --bump-file=package-lock.json --bump-file=.versionrc
 ```
 
-_See code: [src/commands/release.ts](https://github.com/kerren/brrelease/blob/v1.14.1/src/commands/release.ts)_
+_See code: [src/commands/release.ts](https://github.com/kerren/brrelease/blob/v1.14.2/src/commands/release.ts)_
 <!-- commandsstop -->
 
 
