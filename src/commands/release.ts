@@ -178,11 +178,13 @@ export default class Release extends Command {
                 await gitStageFile(gitBinaryPath, changelogFilePath);
                 await gitCommitChanges(gitBinaryPath, flags['changelog-commit-message'], sign);
                 changeLogSpinner.start(`Clearing additional files`);
-                try {
+
+                const additionalFiles = await gitCheckForChanges(gitBinaryPath);
+                if (additionalFiles) {
                     await gitDiscardAllUnstagedChanges(gitBinaryPath);
                     changeLogSpinner.succeed(`Clearing additional files`);
-                } catch (error) {
-                    changeLogSpinner.info(`No additional branch files generated`);
+                } else {
+                    changeLogSpinner.info(`No additional bump files generated`);
                 }
             }
 
