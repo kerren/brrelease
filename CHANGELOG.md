@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [1.14.0](https://github.com/kerren/brrelease/compare/v1.13.0...v1.14.0) (2024-12-24)
+
+
+### Features
+
+* **bumpfiles:** Only run a commit if there are files that have changed after bumping the version ([caae0ff](https://github.com/kerren/brrelease/commit/caae0ff5a72e2281aded705acb37de582ec7c8cc))
+
+
+### Bug Fixes
+
+* **changelog:** Check for unstaged files and file changes before clearing ([a66c0f3](https://github.com/kerren/brrelease/commit/a66c0f32b48ccb57fd25884f247f0f0f714d17b1))
+
 ## [1.13.0](https://github.com/kerren/brrelease/compare/v1.12.0...v1.13.0) (2024-12-24)
 
 

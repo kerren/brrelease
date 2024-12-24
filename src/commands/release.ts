@@ -178,17 +178,19 @@ export default class Release extends Command {
                 await gitStageFile(gitBinaryPath, changelogFilePath);
                 await gitCommitChanges(gitBinaryPath, flags['changelog-commit-message'], sign);
                 changeLogSpinner.start(`Clearing additional files`);
-                try {
+
+                const additionalFiles = await gitCheckForChanges(gitBinaryPath);
+                if (additionalFiles) {
                     await gitDiscardAllUnstagedChanges(gitBinaryPath);
                     changeLogSpinner.succeed(`Clearing additional files`);
-                } catch (error) {
-                    changeLogSpinner.info(`No additional branch files generated`);
+                } else {
+                    changeLogSpinner.info(`No additional files to clear`);
                 }
             }
 
             // 3. Run the bump files
             const numFiles = packageFiles.length + bumpFiles.length + updaters.length;
-            const bumpSpinner = ora(`Bumping version number to ${newVersionWithPrefix}`);
+            const bumpSpinner = ora(`Bumping version number to ${newVersionWithPrefix}`).start();
             if (numFiles > 0 && !firstRelease) {
                 await commitAndTagVersion({
                     ...commitAndTagBody,
@@ -198,9 +200,14 @@ export default class Release extends Command {
                         commit: true,
                     },
                 });
-                await gitStageChanges(gitBinaryPath);
-                await gitCommitChanges(gitBinaryPath, flags['bump-files-commit-message'], sign);
-                bumpSpinner.succeed(`Bumping version number to ${newVersionWithPrefix}`);
+                const additionalFiles = await gitCheckForChanges(gitBinaryPath);
+                if (additionalFiles) {
+                    await gitStageChanges(gitBinaryPath);
+                    await gitCommitChanges(gitBinaryPath, flags['bump-files-commit-message'], sign);
+                    bumpSpinner.succeed(`Bumping version number to ${newVersionWithPrefix}`);
+                } else {
+                    bumpSpinner.warn(`No files specified to bump to ${newVersionWithPrefix}`);
+                }
             } else {
                 bumpSpinner.warn(`No files specified to bump to ${newVersionWithPrefix}`);
             }
