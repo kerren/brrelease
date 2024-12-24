@@ -20,6 +20,12 @@ brew install kerren/brrelease-tap/brrelease
 Here's a video on how to use the CLI for different workflows,
 [![brrelease youtube video](https://img.youtube.com/vi/UoJ43CeyeoI/0.jpg)](https://www.youtube.com/watch?v=UoJ43CeyeoI)
 
+You can do single branch workflows or multibranch workflows. For a single branch
+your git commit graph would look something like this:
+![Single Branch Workflow](./readme/single_branch.svg)
+
+For a multi-branch workflow, your git graph would look something like this:
+![Multi Branch Workflow](./readme/multi_branch.svg)
 
 Check out the [release command](#brrelease-release) below for more information 
 on how to use it!
