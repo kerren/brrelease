@@ -17,6 +17,10 @@ Homebrew (which is much easier):
 brew install kerren/brrelease-tap/brrelease
 ```
 
+Here's a video on how to use the CLI for different workflows,
+[![brrelease youtube video](https://img.youtube.com/vi/UoJ43CeyeoI/0.jpg)](https://www.youtube.com/watch?v=UoJ43CeyeoI)
+
+
 Check out the [release command](#brrelease-release) below for more information 
 on how to use it!
 
@@ -33,7 +37,7 @@ $ npm install -g brrelease
 $ brrelease COMMAND
 running command...
 $ brrelease (--version)
-brrelease/1.14.0 linux-x64 node-v23.5.0
+brrelease/1.14.1 linux-x64 node-v23.5.0
 $ brrelease --help [COMMAND]
 USAGE
   $ brrelease COMMAND
@@ -171,7 +175,7 @@ EXAMPLES
   $ brrelease release --package-file=package.json --bump-file=package-lock.json --bump-file=.versionrc
 ```
 
-_See code: [src/commands/release.ts](https://github.com/kerren/brrelease/blob/v1.14.0/src/commands/release.ts)_
+_See code: [src/commands/release.ts](https://github.com/kerren/brrelease/blob/v1.14.1/src/commands/release.ts)_
 <!-- commandsstop -->
 
 
