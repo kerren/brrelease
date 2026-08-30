@@ -34,6 +34,7 @@ on how to use it!
 <!-- toc -->
 * [Usage](#usage)
 * [Commands](#commands)
+* [Preflight checks](#preflight-checks)
 * [FAQ](#faq)
 <!-- tocstop -->
 # Usage
@@ -43,7 +44,7 @@ $ npm install -g brrelease
 $ brrelease COMMAND
 running command...
 $ brrelease (--version)
-brrelease/1.14.3 linux-x64 node-v23.5.0
+brrelease/1.15.0 linux-x64 node-v26.7.0
 $ brrelease --help [COMMAND]
 USAGE
   $ brrelease COMMAND
@@ -65,7 +66,7 @@ USAGE
   $ brrelease autocomplete [SHELL] [-r]
 
 ARGUMENTS
-  SHELL  (zsh|bash|powershell) Shell type
+  [SHELL]  (zsh|bash|powershell) Shell type
 
 FLAGS
   -r, --refresh-cache  Refresh cache (ignores displaying instructions)
@@ -85,7 +86,7 @@ EXAMPLES
   $ brrelease autocomplete --refresh-cache
 ```
 
-_See code: [@oclif/plugin-autocomplete](https://github.com/oclif/plugin-autocomplete/blob/v3.2.15/src/commands/autocomplete/index.ts)_
+_See code: [@oclif/plugin-autocomplete](https://github.com/oclif/plugin-autocomplete/blob/v3.3.0/src/commands/autocomplete/index.ts)_
 
 ## `brrelease help [COMMAND]`
 
@@ -96,7 +97,7 @@ USAGE
   $ brrelease help [COMMAND...] [-n]
 
 ARGUMENTS
-  COMMAND...  Command to show help for.
+  [COMMAND...]  Command to show help for.
 
 FLAGS
   -n, --nested-commands  Include all nested commands in the output.
@@ -105,7 +106,7 @@ DESCRIPTION
   Display help for brrelease.
 ```
 
-_See code: [@oclif/plugin-help](https://github.com/oclif/plugin-help/blob/v6.2.20/src/commands/help.ts)_
+_See code: [@oclif/plugin-help](https://github.com/oclif/plugin-help/blob/6.3.0/src/commands/help.ts)_
 
 ## `brrelease release`
 
@@ -116,6 +117,7 @@ USAGE
   $ brrelease release [-P <value>] [-G <value>] [-R <value>] [-c <value>] [-C] [--changelog-commit-message
     <value>] [-r <value>...] [-m <value>] [-b <value>] [--bump-files-commit-message <value>] [-p <value>...] [-B
     <value>...] [-u <value>...] [--release-as major|minor|patch] [--first-release] [--prerelease <value>] [-s] [-A]
+    [--skip-preflight] [--fail-on-uncommitted] [--skip-fetch]
 
 FLAGS
   -A, --auto-push                                         Automatically push the branches and tag once the release has
@@ -154,6 +156,10 @@ FLAGS
                                                           message to use when bumping the version in files
       --changelog-commit-message=<value>                  [default: chore: generate the changelog] The commit message
                                                           that should be used to commit the changelog file
+      --fail-on-uncommitted                               Fail the preflight checks when there are uncommitted changes
+                                                          in the working tree. By default uncommitted changes are only
+                                                          reported as a warning, because a build run before the release
+                                                          usually leaves generated files behind.
       --first-release                                     If this is the first release being created (see
                                                           https://github.com/absolute-version/commit-and-tag-version)
       --prerelease=<value>                                The prerelease prefix that should be used if necessary (see
@@ -161,6 +167,12 @@ FLAGS
       --release-as=<option>                               Specify the type of release (see
                                                           https://github.com/absolute-version/commit-and-tag-version)
                                                           <options: major|minor|patch>
+      --skip-fetch                                        Do not contact the remote during the preflight checks.
+                                                          Branches are then compared against the last known state of the
+                                                          remote and the remote tag check is skipped.
+      --skip-preflight                                    Skip the preflight checks that run before the release starts.
+                                                          This is an escape hatch, you are strongly encouraged to fix
+                                                          what the checks report instead.
 
 DESCRIPTION
   Run a release on the branch that you're on
@@ -181,9 +193,44 @@ EXAMPLES
   $ brrelease release --package-file=package.json --bump-file=package-lock.json --bump-file=.versionrc
 ```
 
-_See code: [src/commands/release.ts](https://github.com/kerren/brrelease/blob/v1.14.3/src/commands/release.ts)_
+_See code: [src/commands/release.ts](https://github.com/kerren/brrelease/blob/v1.15.0/src/commands/release.ts)_
 <!-- commandsstop -->
 
+
+# Preflight checks
+
+Before it touches your repository, `brrelease release` runs a set of preflight
+checks. They exist because the release stages every change it finds and discards
+unstaged files while building the changelog, so starting from a bad state can
+commit work you did not mean to release, or lose it entirely.
+
+The checks are:
+
+| Check | Why it matters |
+| --- | --- |
+| You are inside a git repository | Gives a clear error instead of a raw git failure |
+| Uncommitted changes are reported | The release runs `git add -A`, so uncommitted work is swept into the release commits. This is a warning by default, since a build run before the release usually leaves generated files behind, and a failure with `--fail-on-uncommitted` |
+| The merge target exists locally | `--merge-into-branch` pointing at a branch you have not checked out fails halfway through the release |
+| Each branch involved is level with its remote | Releasing from a stale or diverged branch tags the wrong commit and the push is rejected |
+| An upstream is configured | `--auto-push` runs a bare `git push`, which fails without one |
+| The tag does not already exist, locally or on the remote | A tag someone else already pushed is only discovered when your push is rejected, after the release has run |
+| The release branch does not already exist | Usually left behind by a release that failed part way through |
+
+Anything that would break the release stops it before any changes are made.
+Things that are worth knowing but not fatal, such as being unable to reach the
+remote, are reported as warnings and the release continues.
+
+Three flags adjust the behaviour:
+
+- `--fail-on-uncommitted` turns the uncommitted changes warning into a failure,
+  so the release stops when the working tree is dirty. Use it when nothing in
+  your release should be generating files, and you would rather be told than
+  have them committed into the release.
+- `--skip-fetch` avoids contacting the remote. Branches are compared against the
+  last known state of the remote and the remote tag check is skipped, which is
+  useful offline.
+- `--skip-preflight` bypasses the checks entirely. It is an escape hatch, and
+  you are much better off fixing what the checks report.
 
 # FAQ
 
