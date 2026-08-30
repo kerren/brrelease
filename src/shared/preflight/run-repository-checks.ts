@@ -14,7 +14,7 @@ export async function runRepositoryChecks(options: PreflightOptions): Promise<Pr
     const { gitBinaryPath, mergeIntoBranch, currentBranch } = options;
     const checks: PreflightCheck[] = [];
 
-    checks.push(await checkWorkingTreeIsClean(options));
+    checks.push(await checkForUncommittedChanges(options));
 
     if (mergeIntoBranch && mergeIntoBranch !== currentBranch) {
         checks.push(await checkMergeTargetExists(gitBinaryPath, mergeIntoBranch));
@@ -36,29 +36,31 @@ export async function runRepositoryChecks(options: PreflightOptions): Promise<Pr
     return checks;
 }
 
-async function checkWorkingTreeIsClean(options: PreflightOptions): Promise<PreflightCheck> {
-    const name = 'Working tree is clean';
-
-    if (options.allowDirty) {
-        return {
-            name,
-            status: 'skip',
-            message: 'Skipped because --allow-dirty was passed',
-            remedy: 'The release stages all changes it finds, so uncommitted work will be swept into the release commits',
-        };
-    }
+async function checkForUncommittedChanges(options: PreflightOptions): Promise<PreflightCheck> {
+    const name = 'Working tree';
 
     const hasChanges = await gitCheckForChanges(options.gitBinaryPath);
-    if (hasChanges) {
+    if (!hasChanges) {
+        return { name, status: 'pass', message: 'No uncommitted changes' };
+    }
+
+    // Builds routinely leave generated files behind, so uncommitted changes are normal rather than
+    // fatal. They are still worth reporting, because the release stages everything it finds.
+    if (!options.failOnUncommitted) {
         return {
             name,
-            status: 'fail',
+            status: 'warn',
             message: 'There are uncommitted changes in the working tree',
-            remedy: 'Commit or stash them first. The release stages every change it finds and discards unstaged files while building the changelog, so uncommitted work would be committed into the release or lost.',
+            remedy: 'The release stages every change it finds, so they will be committed into the release. Pass --fail-on-uncommitted to stop the release when the working tree is dirty.',
         };
     }
 
-    return { name, status: 'pass', message: 'No uncommitted changes' };
+    return {
+        name,
+        status: 'fail',
+        message: 'There are uncommitted changes in the working tree and --fail-on-uncommitted was passed',
+        remedy: 'Commit or stash them first. The release stages every change it finds and discards unstaged files while building the changelog, so uncommitted work would be committed into the release or lost.',
+    };
 }
 
 async function checkMergeTargetExists(gitBinaryPath: string, mergeIntoBranch: string): Promise<PreflightCheck> {

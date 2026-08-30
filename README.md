@@ -117,7 +117,7 @@ USAGE
   $ brrelease release [-P <value>] [-G <value>] [-R <value>] [-c <value>] [-C] [--changelog-commit-message
     <value>] [-r <value>...] [-m <value>] [-b <value>] [--bump-files-commit-message <value>] [-p <value>...] [-B
     <value>...] [-u <value>...] [--release-as major|minor|patch] [--first-release] [--prerelease <value>] [-s] [-A]
-    [--skip-preflight] [--allow-dirty] [--skip-fetch]
+    [--skip-preflight] [--fail-on-uncommitted] [--skip-fetch]
 
 FLAGS
   -A, --auto-push                                         Automatically push the branches and tag once the release has
@@ -152,14 +152,14 @@ FLAGS
   -u, --updater=<value>...                                The updater files/scripts that should run during execution
                                                           (see
                                                           https://github.com/absolute-version/commit-and-tag-version)
-      --allow-dirty                                       Allow the release to run with uncommitted changes in the
-                                                          working tree. Note that the release stages every change it
-                                                          finds, so uncommitted work will be committed into the release
-                                                          or discarded.
       --bump-files-commit-message=<value>                 [default: chore: bump the version in project files] The commit
                                                           message to use when bumping the version in files
       --changelog-commit-message=<value>                  [default: chore: generate the changelog] The commit message
                                                           that should be used to commit the changelog file
+      --fail-on-uncommitted                               Fail the preflight checks when there are uncommitted changes
+                                                          in the working tree. By default uncommitted changes are only
+                                                          reported as a warning, because a build run before the release
+                                                          usually leaves generated files behind.
       --first-release                                     If this is the first release being created (see
                                                           https://github.com/absolute-version/commit-and-tag-version)
       --prerelease=<value>                                The prerelease prefix that should be used if necessary (see
@@ -209,7 +209,7 @@ The checks are:
 | Check | Why it matters |
 | --- | --- |
 | You are inside a git repository | Gives a clear error instead of a raw git failure |
-| The working tree is clean | The release runs `git add -A`, so uncommitted work would be swept into the release commits or discarded |
+| Uncommitted changes are reported | The release runs `git add -A`, so uncommitted work is swept into the release commits. This is a warning by default, since a build run before the release usually leaves generated files behind, and a failure with `--fail-on-uncommitted` |
 | The merge target exists locally | `--merge-into-branch` pointing at a branch you have not checked out fails halfway through the release |
 | Each branch involved is level with its remote | Releasing from a stale or diverged branch tags the wrong commit and the push is rejected |
 | An upstream is configured | `--auto-push` runs a bare `git push`, which fails without one |
@@ -222,8 +222,10 @@ remote, are reported as warnings and the release continues.
 
 Three flags adjust the behaviour:
 
-- `--allow-dirty` runs the release with uncommitted changes in the working tree.
-  Be aware that those changes will be committed into the release or discarded.
+- `--fail-on-uncommitted` turns the uncommitted changes warning into a failure,
+  so the release stops when the working tree is dirty. Use it when nothing in
+  your release should be generating files, and you would rather be told than
+  have them committed into the release.
 - `--skip-fetch` avoids contacting the remote. Branches are compared against the
   last known state of the remote and the remote tag check is skipped, which is
   useful offline.

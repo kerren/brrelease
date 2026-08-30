@@ -21,7 +21,7 @@ describe('runRepositoryChecks', () => {
 
     function options(overrides: Partial<PreflightOptions> = {}): PreflightOptions {
         return {
-            allowDirty: false,
+            failOnUncommitted: false,
             autoPush: false,
             currentBranch: 'main',
             gitBinaryPath: 'git',
@@ -32,28 +32,35 @@ describe('runRepositoryChecks', () => {
 
     describe('the working tree check', () => {
         it('passes when there is nothing uncommitted', async () => {
-            const check = findCheck(await runRepositoryChecks(options()), 'Working tree is clean');
+            const check = findCheck(await runRepositoryChecks(options()), 'Working tree');
 
             expect(check.status).to.equal('pass');
         });
 
-        it('fails when there are uncommitted changes, because the release would sweep them up', async () => {
+        it('warns, rather than fails, when there are uncommitted changes', async () => {
             repo.writeFile('scratch.txt', 'work in progress\n');
 
-            const check = findCheck(await runRepositoryChecks(options()), 'Working tree is clean');
+            const check = findCheck(await runRepositoryChecks(options()), 'Working tree');
+
+            expect(check.status).to.equal('warn');
+            expect(check.message).to.contain('uncommitted changes');
+            expect(check.remedy).to.contain('--fail-on-uncommitted');
+        });
+
+        it('fails when there are uncommitted changes and --fail-on-uncommitted is used', async () => {
+            repo.writeFile('scratch.txt', 'work in progress\n');
+
+            const check = findCheck(await runRepositoryChecks(options({ failOnUncommitted: true })), 'Working tree');
 
             expect(check.status).to.equal('fail');
             expect(check.message).to.contain('uncommitted changes');
             expect(check.remedy).to.contain('Commit or stash');
         });
 
-        it('is skipped, not passed, when --allow-dirty is used', async () => {
-            repo.writeFile('scratch.txt', 'work in progress\n');
+        it('passes when the tree is clean even with --fail-on-uncommitted', async () => {
+            const check = findCheck(await runRepositoryChecks(options({ failOnUncommitted: true })), 'Working tree');
 
-            const check = findCheck(await runRepositoryChecks(options({ allowDirty: true })), 'Working tree is clean');
-
-            expect(check.status).to.equal('skip');
-            expect(check.message).to.contain('--allow-dirty');
+            expect(check.status).to.equal('pass');
         });
     });
 

@@ -125,8 +125,8 @@ export default class Release extends Command {
             description: `Skip the preflight checks that run before the release starts. This is an escape hatch, you are strongly encouraged to fix what the checks report instead.`,
             default: false,
         }),
-        'allow-dirty': Flags.boolean({
-            description: `Allow the release to run with uncommitted changes in the working tree. Note that the release stages every change it finds, so uncommitted work will be committed into the release or discarded.`,
+        'fail-on-uncommitted': Flags.boolean({
+            description: `Fail the preflight checks when there are uncommitted changes in the working tree. By default uncommitted changes are only reported as a warning, because a build run before the release usually leaves generated files behind.`,
             default: false,
         }),
         'skip-fetch': Flags.boolean({
@@ -221,7 +221,7 @@ export default class Release extends Command {
 
             const preflightOptions: PreflightOptions = {
                 gitBinaryPath,
-                allowDirty: flags['allow-dirty'],
+                failOnUncommitted: flags['fail-on-uncommitted'],
                 skipFetch: flags['skip-fetch'],
                 autoPush,
                 currentBranch,
