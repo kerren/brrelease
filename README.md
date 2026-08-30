@@ -34,6 +34,7 @@ on how to use it!
 <!-- toc -->
 * [Usage](#usage)
 * [Commands](#commands)
+* [Preflight checks](#preflight-checks)
 * [FAQ](#faq)
 <!-- tocstop -->
 # Usage
@@ -116,6 +117,7 @@ USAGE
   $ brrelease release [-P <value>] [-G <value>] [-R <value>] [-c <value>] [-C] [--changelog-commit-message
     <value>] [-r <value>...] [-m <value>] [-b <value>] [--bump-files-commit-message <value>] [-p <value>...] [-B
     <value>...] [-u <value>...] [--release-as major|minor|patch] [--first-release] [--prerelease <value>] [-s] [-A]
+    [--skip-preflight] [--allow-dirty] [--skip-fetch]
 
 FLAGS
   -A, --auto-push                                         Automatically push the branches and tag once the release has
@@ -150,6 +152,10 @@ FLAGS
   -u, --updater=<value>...                                The updater files/scripts that should run during execution
                                                           (see
                                                           https://github.com/absolute-version/commit-and-tag-version)
+      --allow-dirty                                       Allow the release to run with uncommitted changes in the
+                                                          working tree. Note that the release stages every change it
+                                                          finds, so uncommitted work will be committed into the release
+                                                          or discarded.
       --bump-files-commit-message=<value>                 [default: chore: bump the version in project files] The commit
                                                           message to use when bumping the version in files
       --changelog-commit-message=<value>                  [default: chore: generate the changelog] The commit message
@@ -161,6 +167,12 @@ FLAGS
       --release-as=<option>                               Specify the type of release (see
                                                           https://github.com/absolute-version/commit-and-tag-version)
                                                           <options: major|minor|patch>
+      --skip-fetch                                        Do not contact the remote during the preflight checks.
+                                                          Branches are then compared against the last known state of the
+                                                          remote and the remote tag check is skipped.
+      --skip-preflight                                    Skip the preflight checks that run before the release starts.
+                                                          This is an escape hatch, you are strongly encouraged to fix
+                                                          what the checks report instead.
 
 DESCRIPTION
   Run a release on the branch that you're on
@@ -184,6 +196,39 @@ EXAMPLES
 _See code: [src/commands/release.ts](https://github.com/kerren/brrelease/blob/v1.14.3/src/commands/release.ts)_
 <!-- commandsstop -->
 
+
+# Preflight checks
+
+Before it touches your repository, `brrelease release` runs a set of preflight
+checks. They exist because the release stages every change it finds and discards
+unstaged files while building the changelog, so starting from a bad state can
+commit work you did not mean to release, or lose it entirely.
+
+The checks are:
+
+| Check | Why it matters |
+| --- | --- |
+| You are inside a git repository | Gives a clear error instead of a raw git failure |
+| The working tree is clean | The release runs `git add -A`, so uncommitted work would be swept into the release commits or discarded |
+| The merge target exists locally | `--merge-into-branch` pointing at a branch you have not checked out fails halfway through the release |
+| Each branch involved is level with its remote | Releasing from a stale or diverged branch tags the wrong commit and the push is rejected |
+| An upstream is configured | `--auto-push` runs a bare `git push`, which fails without one |
+| The tag does not already exist, locally or on the remote | A tag someone else already pushed is only discovered when your push is rejected, after the release has run |
+| The release branch does not already exist | Usually left behind by a release that failed part way through |
+
+Anything that would break the release stops it before any changes are made.
+Things that are worth knowing but not fatal, such as being unable to reach the
+remote, are reported as warnings and the release continues.
+
+Three flags adjust the behaviour:
+
+- `--allow-dirty` runs the release with uncommitted changes in the working tree.
+  Be aware that those changes will be committed into the release or discarded.
+- `--skip-fetch` avoids contacting the remote. Branches are compared against the
+  last known state of the remote and the remote tag check is skipped, which is
+  useful offline.
+- `--skip-preflight` bypasses the checks entirely. It is an escape hatch, and
+  you are much better off fixing what the checks report.
 
 # FAQ
 
