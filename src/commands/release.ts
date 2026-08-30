@@ -108,7 +108,7 @@ export default class Release extends Command {
         }),
         sign: Flags.boolean({
             char: 's',
-            description: `Sign the git commits`,
+            description: `Sign the git commits and the release tag`,
             default: true,
             allowNo: true,
         }),
@@ -246,7 +246,7 @@ export default class Release extends Command {
                 // We need to merge this into a DIFFERENT branch to what we started from
                 await gitCheckoutBranch(gitBinaryPath, mergeBranchName);
                 await gitMergeBranch(gitBinaryPath, releaseBranchName, sign);
-                await gitCreateTag(gitBinaryPath, newVersionWithPrefix, changelogOutput);
+                await gitCreateTag(gitBinaryPath, newVersionWithPrefix, changelogOutput, sign);
                 if (autoPush) {
                     await gitPushBranch(gitBinaryPath);
                 }
@@ -263,7 +263,7 @@ export default class Release extends Command {
                 // We are merging into the current branch
                 await gitCheckoutBranch(gitBinaryPath, currentBranch);
                 await gitMergeBranch(gitBinaryPath, releaseBranchName, sign);
-                await gitCreateTag(gitBinaryPath, newVersionWithPrefix, changelogOutput);
+                await gitCreateTag(gitBinaryPath, newVersionWithPrefix, changelogOutput, sign);
                 if (autoPush) {
                     await gitPushBranch(gitBinaryPath);
                 }
