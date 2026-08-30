@@ -1,0 +1,48 @@
+name: Repository hygiene
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+      - 'test/**'
+      - 'feature/**'
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: hygiene-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  no-root-plan-files:
+    name: No plan.md in the repository root
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@v4
+
+      - name: Assert there is no plan.md in the repository root
+        # Planning notes are working documents. They go stale the moment the work lands, and a
+        # stale plan in the root of a published package is worse than no plan at all, so this
+        # keeps them out of the repository entirely. Put the work in issues instead.
+        run: |
+          set -euo pipefail
+
+          # Only tracked files matter - the check is about what is committed, not about whatever a
+          # runner happens to leave in the working tree. The match is deliberately case
+          # insensitive so that PLAN.md and Plan.md are caught as well.
+          matches="$(git ls-files --full-name | grep -iE '^plan\.md$' || true)"
+
+          if [ -n "$matches" ]; then
+            echo "::error::Found a plan file in the repository root:"
+            echo "$matches" | while read -r file; do
+              echo "::error file=$file::$file must not be committed to the repository root"
+            done
+            echo ""
+            echo "Remove it with 'git rm $matches' and track the outstanding work in GitHub issues."
+            exit 1
+          fi
+
+          echo "No plan.md in the repository root."
