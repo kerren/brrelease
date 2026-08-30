@@ -44,7 +44,7 @@ $ npm install -g brrelease
 $ brrelease COMMAND
 running command...
 $ brrelease (--version)
-brrelease/1.16.0 linux-x64 node-v26.7.0
+brrelease/1.16.1 linux-x64 node-v26.7.0
 $ brrelease --help [COMMAND]
 USAGE
   $ brrelease COMMAND
@@ -66,7 +66,7 @@ USAGE
   $ brrelease autocomplete [SHELL] [-r]
 
 ARGUMENTS
-  [SHELL]  (zsh|bash|powershell) Shell type
+  SHELL  (zsh|bash|powershell) Shell type
 
 FLAGS
   -r, --refresh-cache  Refresh cache (ignores displaying instructions)
@@ -86,7 +86,7 @@ EXAMPLES
   $ brrelease autocomplete --refresh-cache
 ```
 
-_See code: [@oclif/plugin-autocomplete](https://github.com/oclif/plugin-autocomplete/blob/v3.3.0/src/commands/autocomplete/index.ts)_
+_See code: [@oclif/plugin-autocomplete](https://github.com/oclif/plugin-autocomplete/blob/v3.2.15/src/commands/autocomplete/index.ts)_
 
 ## `brrelease help [COMMAND]`
 
@@ -97,7 +97,7 @@ USAGE
   $ brrelease help [COMMAND...] [-n]
 
 ARGUMENTS
-  [COMMAND...]  Command to show help for.
+  COMMAND...  Command to show help for.
 
 FLAGS
   -n, --nested-commands  Include all nested commands in the output.
@@ -106,7 +106,7 @@ DESCRIPTION
   Display help for brrelease.
 ```
 
-_See code: [@oclif/plugin-help](https://github.com/oclif/plugin-help/blob/6.3.0/src/commands/help.ts)_
+_See code: [@oclif/plugin-help](https://github.com/oclif/plugin-help/blob/v6.2.20/src/commands/help.ts)_
 
 ## `brrelease release`
 
@@ -193,7 +193,7 @@ EXAMPLES
   $ brrelease release --package-file=package.json --bump-file=package-lock.json --bump-file=.versionrc
 ```
 
-_See code: [src/commands/release.ts](https://github.com/kerren/brrelease/blob/v1.16.0/src/commands/release.ts)_
+_See code: [src/commands/release.ts](https://github.com/kerren/brrelease/blob/v1.16.1/src/commands/release.ts)_
 <!-- commandsstop -->
 
 
