@@ -15,6 +15,10 @@ import { commitAndTagVersion } from '../shared/commit-and-tag-version.js';
 import { gitStageFile } from '../shared/git/git-stage-file.js';
 import { gitDiscardAllUnstagedChanges } from '../shared/git/git-discard-all-unstaged-changes.js';
 import { gitPushBranch } from '../shared/git/git-push-branch.js';
+import { gitIsInsideWorkTree } from '../shared/git/git-is-inside-work-tree.js';
+import { hasFailure, PreflightCheck, PreflightOptions } from '../shared/preflight/preflight-check.js';
+import { runRepositoryChecks } from '../shared/preflight/run-repository-checks.js';
+import { runVersionChecks } from '../shared/preflight/run-version-checks.js';
 
 export default class Release extends Command {
     static override args = {};
@@ -117,7 +121,63 @@ export default class Release extends Command {
             description: `Automatically push the branches and tag once the release has been merged (this is more for convenience)`,
             default: false,
         }),
+        'skip-preflight': Flags.boolean({
+            description: `Skip the preflight checks that run before the release starts. This is an escape hatch, you are strongly encouraged to fix what the checks report instead.`,
+            default: false,
+        }),
+        'fail-on-uncommitted': Flags.boolean({
+            description: `Fail the preflight checks when there are uncommitted changes in the working tree. By default uncommitted changes are only reported as a warning, because a build run before the release usually leaves generated files behind.`,
+            default: false,
+        }),
+        'skip-fetch': Flags.boolean({
+            description: `Do not contact the remote during the preflight checks. Branches are then compared against the last known state of the remote and the remote tag check is skipped.`,
+            default: false,
+        }),
     };
+
+    /**
+     * Prints each preflight check with its status, and the remedy for anything that did not pass.
+     */
+    private reportPreflightChecks(checks: PreflightCheck[]): void {
+        for (const check of checks) {
+            switch (check.status) {
+                case 'pass': {
+                    this.log(`  ${chalk.green('✔')} ${check.name} ${chalk.dim(`- ${check.message}`)}`);
+                    break;
+                }
+                case 'warn': {
+                    this.log(`  ${chalk.yellow('⚠')} ${check.name} ${chalk.yellow(`- ${check.message}`)}`);
+                    break;
+                }
+                case 'fail': {
+                    this.log(`  ${chalk.red('✖')} ${check.name} ${chalk.red(`- ${check.message}`)}`);
+                    break;
+                }
+                case 'skip': {
+                    this.log(`  ${chalk.dim('○')} ${check.name} ${chalk.dim(`- ${check.message}`)}`);
+                    break;
+                }
+            }
+
+            if (check.remedy && check.status !== 'pass') {
+                this.log(`    ${chalk.dim(check.remedy)}`);
+            }
+        }
+    }
+
+    /**
+     * Stops the release if any preflight check failed. Warnings are informational and do not block.
+     */
+    private assertPreflightPassed(checks: PreflightCheck[]): void {
+        if (!hasFailure(checks)) {
+            return;
+        }
+
+        const failures = checks.filter((check) => check.status === 'fail');
+        throw new Error(
+            `Preflight found ${failures.length} problem(s) that would break this release. Fix them and try again, or re-run with --skip-preflight to bypass the checks.`,
+        );
+    }
 
     public async run(): Promise<void> {
         const { flags } = await this.parse(Release);
@@ -146,17 +206,55 @@ export default class Release extends Command {
                 prerelease: flags['prerelease'] ?? undefined,
             };
 
+            const autoPush = flags['auto-push'];
+            const mergeIntoBranch = flags['merge-into-branch'];
+            const skipPreflight = flags['skip-preflight'];
+
+            // 0. Preflight - make sure the repository is in a state where a release can succeed
+            if (!(await gitIsInsideWorkTree(gitBinaryPath))) {
+                throw new Error(
+                    `This does not look like a git repository (or ${gitBinaryPath} is not a working git binary). Run the release from inside a repository.`,
+                );
+            }
+
+            const { stdout: currentBranch } = await gitGetCurrentBranch(gitBinaryPath);
+
+            const preflightOptions: PreflightOptions = {
+                gitBinaryPath,
+                failOnUncommitted: flags['fail-on-uncommitted'],
+                skipFetch: flags['skip-fetch'],
+                autoPush,
+                currentBranch,
+                mergeIntoBranch,
+            };
+
+            if (skipPreflight) {
+                this.log(chalk.yellow('Skipping the preflight checks because --skip-preflight was passed'));
+            } else {
+                this.log(chalk.bold('Running preflight checks'));
+                const repositoryChecks = await runRepositoryChecks(preflightOptions);
+                this.reportPreflightChecks(repositoryChecks);
+                this.assertPreflightPassed(repositoryChecks);
+            }
+
             const dryRun = await commitAndTagVersion({ ...commitAndTagBody, dryRun: true });
             const newVersion = dryRun.newVersion!;
             const changelogOutput = dryRun.changelogOutput!;
 
             const newVersionWithPrefix = `${tagPrefix}${newVersion}`;
+            const releaseBranchName = `${releaseBranchPrefix}${newVersionWithPrefix}`;
+
+            if (!skipPreflight) {
+                // The dry run above prints a lot of output, so re-anchor the remaining checks
+                this.log(chalk.bold(`Running preflight checks for ${newVersionWithPrefix}`));
+                const versionChecks = await runVersionChecks(preflightOptions, newVersionWithPrefix, releaseBranchName);
+                this.reportPreflightChecks(versionChecks);
+                this.assertPreflightPassed(versionChecks);
+            }
+
             this.log(`The new release version will be ${chalk.green(newVersionWithPrefix)}`);
 
-            const { stdout: currentBranch } = await gitGetCurrentBranch(gitBinaryPath);
-
             // 1. Create the new release branch
-            const releaseBranchName = `${releaseBranchPrefix}${newVersionWithPrefix}`;
             const newReleaseBranchSpinner = ora(`Creating a new release branch ${chalk.bgBlue(releaseBranchName)}`).start();
             await gitCreateBranch(gitBinaryPath, releaseBranchName);
             newReleaseBranchSpinner.succeed(`Creating a new release branch ${newVersionWithPrefix}`);
@@ -238,9 +336,8 @@ export default class Release extends Command {
             }
 
             // 5. Merge branch
-            const isDifferentMergeBranch = !!flags['merge-into-branch'];
-            const mergeBranchName = flags['merge-into-branch'] ?? currentBranch;
-            const autoPush = flags['auto-push'];
+            const isDifferentMergeBranch = !!mergeIntoBranch;
+            const mergeBranchName = mergeIntoBranch ?? currentBranch;
             const mergeSpinner = ora(`Merging the release into branch ${mergeBranchName}`).start();
             if (isDifferentMergeBranch) {
                 // We need to merge this into a DIFFERENT branch to what we started from

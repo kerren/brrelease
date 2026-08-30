@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [1.15.0](https://github.com/kerren/brrelease/compare/v1.14.3...v1.15.0) (2026-08-30)
+
+
+### Features
+
+* **preflight:** check the repository state before starting a release ([ff40af8](https://github.com/kerren/brrelease/commit/ff40af85787aaf5673f0a09090ecd22caf240a27)), closes [#16](https://github.com/kerren/brrelease/issues/16)
+* **preflight:** check the repository state before starting a release ([b7354a6](https://github.com/kerren/brrelease/commit/b7354a6e727457e86fd04fba3a01e2d8bc2ee295))
+* **preflight:** warn about uncommitted changes instead of failing ([88cb372](https://github.com/kerren/brrelease/commit/88cb372da79d1adf1f0fc435a843247d6f1e802e)), closes [#18](https://github.com/kerren/brrelease/issues/18)
+* **preflight:** warn about uncommitted changes instead of failing ([d499167](https://github.com/kerren/brrelease/commit/d49916791b4ba2f7e5c4b5af6e238f87fe3bdedd))
+* **tests:** Replace placeholder tests with comprehensive integration test suite ([df8376e](https://github.com/kerren/brrelease/commit/df8376eb67e0006655d37216a9c6295009b467ba)), closes [#17](https://github.com/kerren/brrelease/issues/17)
+
 ## [1.14.3](https://github.com/kerren/brrelease/compare/v1.14.2...v1.14.3) (2024-12-24)
 
 ## [1.14.2](https://github.com/kerren/brrelease/compare/v1.14.1...v1.14.2) (2024-12-24)
