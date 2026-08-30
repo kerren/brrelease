@@ -148,7 +148,7 @@ FLAGS
   -r, --run-script-during-release=<value>...              One or many scripts that should be run during the release,
                                                           it's recommended that you make these npm scripts and they
                                                           don't contain the '"' character
-  -s, --[no-]sign                                         Sign the git commits
+  -s, --[no-]sign                                         Sign the git commits and the release tag
   -u, --updater=<value>...                                The updater files/scripts that should run during execution
                                                           (see
                                                           https://github.com/absolute-version/commit-and-tag-version)

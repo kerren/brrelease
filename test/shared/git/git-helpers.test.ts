@@ -1,4 +1,6 @@
 import { expect } from 'chai';
+import { chmodSync } from 'node:fs';
+import { join } from 'node:path';
 
 import { gitCheckForChanges } from '../../../src/shared/git/git-check-for-changes.js';
 import { gitCheckoutBranch } from '../../../src/shared/git/git-checkout-branch.js';
@@ -240,7 +242,7 @@ describe('git helpers', () => {
 
     describe('gitCreateTag', () => {
         it('creates an annotated tag carrying the changelog in its message', async () => {
-            await gitCreateTag(git, 'v1.1.0', '### Features\n\n* something new\n');
+            await gitCreateTag(git, 'v1.1.0', '### Features\n\n* something new\n', false);
 
             expect(repo.tags()).to.deep.equal(['v1.1.0']);
             expect(repo.git('cat-file', '-t', 'v1.1.0')).to.equal('tag');
@@ -251,14 +253,69 @@ describe('git helpers', () => {
         });
 
         it('rejects when the tag already exists', async () => {
-            await gitCreateTag(git, 'v1.1.0', 'notes');
+            await gitCreateTag(git, 'v1.1.0', 'notes', false);
 
-            const error = await rejectionOf(gitCreateTag(git, 'v1.1.0', 'notes'));
+            const error = await rejectionOf(gitCreateTag(git, 'v1.1.0', 'notes', false));
 
             expect(String((error as { stderr: string }).stderr)).to.contain('already exists');
         });
+
+        it('signs the tag when signing is asked for', async () => {
+            useStubSigningProgram(repo);
+
+            await gitCreateTag(git, 'v1.1.0', 'notes', true);
+
+            expect(repo.git('cat-file', '-t', 'v1.1.0')).to.equal('tag');
+            expect(tagObject(repo, 'v1.1.0')).to.contain('BEGIN PGP SIGNATURE');
+        });
+
+        it('leaves the tag unsigned when signing is turned off, even where the repository forces it', async () => {
+            useStubSigningProgram(repo);
+            // Without an explicit --no-sign this configuration signs the tag regardless of the flag.
+            repo.git('config', 'tag.gpgsign', 'true');
+
+            await gitCreateTag(git, 'v1.1.0', 'notes', false);
+
+            expect(repo.git('cat-file', '-t', 'v1.1.0')).to.equal('tag');
+            expect(tagObject(repo, 'v1.1.0')).to.not.contain('BEGIN PGP SIGNATURE');
+        });
     });
 });
+
+/**
+ * Points the fixture at a stub signing program so that the signing path can be exercised without a
+ * real key on the machine. Git only cares that the program reports a signature was created and
+ * writes one to stdout, so the stub does exactly that and nothing else.
+ *
+ * @param repo - The repository to configure
+ */
+function useStubSigningProgram(repo: TempGitRepo): void {
+    const program = 'stub-gpg.sh';
+    repo.writeFile(
+        program,
+        [
+            '#!/bin/sh',
+            'echo "[GNUPG:] SIG_CREATED B" >&2',
+            `printf -- '-----BEGIN PGP SIGNATURE-----\\n\\nstub\\n-----END PGP SIGNATURE-----\\n'`,
+            '',
+        ].join('\n'),
+    );
+    chmodSync(join(repo.path, program), 0o755);
+
+    // The stub only speaks OpenPGP, so the format is pinned rather than inherited.
+    repo.git('config', 'gpg.format', 'openpgp');
+    repo.git('config', 'gpg.program', join(repo.path, program));
+    repo.git('config', 'user.signingkey', 'stub-key');
+}
+
+/**
+ * @param repo - The repository holding the tag
+ * @param tag - The tag to read
+ * @returns The raw tag object, which is where a signature shows up
+ */
+function tagObject(repo: TempGitRepo, tag: string): string {
+    return repo.git('cat-file', 'tag', tag);
+}
 
 function stagedFiles(repo: TempGitRepo): string[] {
     return repo
