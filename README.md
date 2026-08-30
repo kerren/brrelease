@@ -44,7 +44,7 @@ $ npm install -g brrelease
 $ brrelease COMMAND
 running command...
 $ brrelease (--version)
-brrelease/1.15.0 linux-x64 node-v26.7.0
+brrelease/1.16.0 linux-x64 node-v26.7.0
 $ brrelease --help [COMMAND]
 USAGE
   $ brrelease COMMAND
@@ -148,7 +148,7 @@ FLAGS
   -r, --run-script-during-release=<value>...              One or many scripts that should be run during the release,
                                                           it's recommended that you make these npm scripts and they
                                                           don't contain the '"' character
-  -s, --[no-]sign                                         Sign the git commits
+  -s, --[no-]sign                                         Sign the git commits and the release tag
   -u, --updater=<value>...                                The updater files/scripts that should run during execution
                                                           (see
                                                           https://github.com/absolute-version/commit-and-tag-version)
@@ -193,7 +193,7 @@ EXAMPLES
   $ brrelease release --package-file=package.json --bump-file=package-lock.json --bump-file=.versionrc
 ```
 
-_See code: [src/commands/release.ts](https://github.com/kerren/brrelease/blob/v1.15.0/src/commands/release.ts)_
+_See code: [src/commands/release.ts](https://github.com/kerren/brrelease/blob/v1.16.0/src/commands/release.ts)_
 <!-- commandsstop -->
 
 
