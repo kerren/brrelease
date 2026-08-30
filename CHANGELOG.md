@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [1.16.0](https://github.com/kerren/brrelease/compare/v1.15.0...v1.16.0) (2026-08-30)
+
+
+### Features
+
+* sign the release tag by default ([e7842fb](https://github.com/kerren/brrelease/commit/e7842fb010a22b8234e4690e6dcb3d1c1bb36955))
+* **tag-sign:** Sign release tags when sign flag is enabled ([7c424d4](https://github.com/kerren/brrelease/commit/7c424d468cdab6491cbe15596baf55a18365ed01)), closes [#19](https://github.com/kerren/brrelease/issues/19)
+
 ## [1.15.0](https://github.com/kerren/brrelease/compare/v1.14.3...v1.15.0) (2026-08-30)
 
 
