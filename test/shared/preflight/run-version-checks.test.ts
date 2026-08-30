@@ -21,7 +21,7 @@ describe('runVersionChecks', () => {
 
     function options(overrides: Partial<PreflightOptions> = {}): PreflightOptions {
         return {
-            allowDirty: false,
+            failOnUncommitted: false,
             autoPush: false,
             currentBranch: 'main',
             gitBinaryPath: 'git',

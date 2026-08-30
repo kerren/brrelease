@@ -18,8 +18,8 @@ export interface PreflightCheck {
 
 export interface PreflightOptions {
     gitBinaryPath: string;
-    /** Allow the release to run with uncommitted changes in the working tree */
-    allowDirty: boolean;
+    /** Turn the uncommitted changes warning into a failure that stops the release */
+    failOnUncommitted: boolean;
     /** Do not contact the remote during the checks */
     skipFetch: boolean;
     /** Whether the release will push, which makes a missing upstream fatal rather than a warning */

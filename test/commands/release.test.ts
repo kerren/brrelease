@@ -285,23 +285,24 @@ describe('release', () => {
     });
 
     describe('preflight', () => {
-        it('refuses to release from a repository with uncommitted changes', async () => {
+        it('warns about uncommitted changes but still releases, because a build leaves files behind', async () => {
             repo.writeFile('scratch.txt', 'work in progress\n');
 
-            const { message, stdout } = await runReleaseExpectingFailure(repo);
+            const { stdout } = await runRelease(repo);
+
+            expect(stdout).to.contain('There are uncommitted changes in the working tree');
+            expect(repo.tags()).to.deep.equal(['v1.1.0']);
+        });
+
+        it('refuses to release with uncommitted changes when --fail-on-uncommitted is passed', async () => {
+            repo.writeFile('scratch.txt', 'work in progress\n');
+
+            const { message, stdout } = await runReleaseExpectingFailure(repo, ['--fail-on-uncommitted']);
 
             expect(message).to.contain('Preflight found 1 problem(s)');
             expect(stdout).to.contain('There are uncommitted changes in the working tree');
             expect(repo.tags()).to.deep.equal([]);
             expect(repo.exists('scratch.txt')).to.equal(true);
-        });
-
-        it('releases anyway when --allow-dirty is passed', async () => {
-            repo.writeFile('scratch.txt', 'work in progress\n');
-
-            await runRelease(repo, ['--allow-dirty']);
-
-            expect(repo.tags()).to.deep.equal(['v1.1.0']);
         });
 
         it('releases anyway when --skip-preflight is passed, and says that it did', async () => {
