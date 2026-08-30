@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [1.16.1](https://github.com/kerren/brrelease/compare/v1.16.0...v1.16.1) (2026-08-30)
+
+
+### Bug Fixes
+
+* **release:** ship the tarball dependencies again ([32db773](https://github.com/kerren/brrelease/commit/32db7731bd673d75c34339441698e2077a67bde3)), closes [#20](https://github.com/kerren/brrelease/issues/20)
+* **release:** ship the tarball dependencies again ([70b0811](https://github.com/kerren/brrelease/commit/70b0811ee7552f504d89f7512fcf654d596838e5))
+
 ## [1.16.0](https://github.com/kerren/brrelease/compare/v1.15.0...v1.16.0) (2026-08-30)
 
 
